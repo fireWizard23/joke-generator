@@ -30,5 +30,22 @@ $backgroundColor: var(--brand-color);
     
 }
 
+@media(max-width: 800px ) {
+    .navbar {
+        &-brand {
+            font-size: 1.5em;
+        }
+    }
+    
+}
 
+
+@media(max-width: 600px ) {
+    .navbar {
+        &-brand {
+            font-size: 1.3em;
+        }
+    }
+    
+}
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -7,9 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
+  innerWidth!: number;
+
+  @HostListener('window:resize')
+  onResize() {
+    this.innerWidth = window.innerWidth;
+  }
+
   constructor() { }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
   }
+
+
+
+
 
 }

@@ -2,9 +2,12 @@
 
     <div class="joke-container">
         <p class="joke-text" style="white-space: pre-line;" >
-            {{ jokeString  || 'Loading...'}}
+            {{ jokeString  || 'Loading...' }}
         </p>
-        <span class="joke-category" *ngIf="jokeString !== null" >{{joke.category}}</span>
+        <span class="joke-category" *ngIf="jokeString !== null" >{{joke.category }}
+
+            
+        </span>
     </div>
     
     <button class="joke-button"

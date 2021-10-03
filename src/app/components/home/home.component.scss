@@ -7,10 +7,11 @@
     }
 
     &-container {
-        width: 90%;
+        width: 90vw;
         font-size: 1.5em;
+        box-sizing: border-box;
         margin: 1rem 0;
-        padding: 1rem 1rem;
+        padding: 0.5rem 1rem;
 
         border: 3px solid var(--brand-color);
         background-color: rgb(235, 233, 233);
@@ -25,12 +26,15 @@
     &-text{
         margin: 1.5rem 0;
         font-size: 1.5em;
+        text-overflow: clip;
+
     }
 
     &-category {
         background-color: var(--brand-color);
         font-size: 1.2rem;
         color: var(--white-text);
+        text-overflow: clip;
         width: 10%;
         max-width: 10rem;
         min-width: 7em;
@@ -56,7 +60,24 @@
     }
 
 
+}
 
 
+
+
+@media(max-width: 500px) {
+
+    .joke-text {
+        font-size: 1.3em;
+    }
 
 }
+
+@media(max-width: 350px) {
+
+    .joke-text {
+        font-size: 1em;
+    }
+
+}
+

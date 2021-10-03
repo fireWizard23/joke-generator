@@ -35,7 +35,7 @@ export type JokeFlags = {
   export function getJokeString(joke : Joke) : string | null {
       if(joke.type === 'twopart') {
         let twopartJoke = joke as TwoPartJoke;
-        return `Setup: ${twopartJoke.setup} \n Delivery: ${twopartJoke.delivery}`;
+        return `${twopartJoke.setup} \n${twopartJoke.delivery}`;
 
       } else if(joke.type == 'single') {
         let singleJoke = joke as SingleJoke;

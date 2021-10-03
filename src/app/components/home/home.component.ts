@@ -32,7 +32,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private getNewJoke() {
     this.jokeString = null;
-    let joke = this.httpService.getSingleJoke();
+    let joke: Observable<Joke>;
+
+    let random = Math.random();
+    
+    if(random > 0.5) {
+      joke = this.httpService.getSingleJoke();
+    } else {
+      joke = this.httpService.getTwoPartJoke();
+    }
+    
+
 
     this.jokeSuscription = joke.subscribe((val) => {
       this.jokeString = getJokeString(val) || 'Error';
