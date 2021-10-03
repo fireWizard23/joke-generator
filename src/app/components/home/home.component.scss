@@ -1,0 +1,62 @@
+.joke{
+
+    &-form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &-container {
+        width: 90%;
+        font-size: 1.5em;
+        margin: 1rem 0;
+        padding: 1rem 1rem;
+
+        border: 3px solid var(--brand-color);
+        background-color: rgb(235, 233, 233);
+        border-radius: 0.7em;
+
+        display: flex;
+        flex-direction: column;        
+        align-items: flex-start;
+
+    }
+    
+    &-text{
+        margin: 1.5rem 0;
+        font-size: 1.5em;
+    }
+
+    &-category {
+        background-color: var(--brand-color);
+        font-size: 1.2rem;
+        color: var(--white-text);
+        width: 10%;
+        max-width: 10rem;
+        min-width: 7em;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        border-bottom: 3px solid var(--brand-color-darker);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+
+    &-button {
+        width: 10em;
+        height: 3em;
+        font-size: 2em;
+        padding: 0;
+        cursor: pointer;
+
+    }
+
+
+
+
+
+}

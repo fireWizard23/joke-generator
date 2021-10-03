@@ -1,0 +1,34 @@
+$backgroundColor: var(--brand-color);
+
+.navbar {
+    
+    height: 10vh;
+    margin: 0;
+    padding: 0;
+    background-color: $backgroundColor;
+
+    &-container {
+        width: 90%;
+        height: 100%;
+        margin: 0 auto;
+
+        display: flex;
+        align-items: center;
+        padding: 0 1em;
+    }
+
+    &-brand {
+        font-size: 2em;
+        font-weight: bold;
+        color: var(--white-text);
+        padding: 0.1em 0.5em;
+
+        background: linear-gradient(30deg, rgb(39, 80, 6), rgb(0, 65, 22));
+        border-radius: 0.1em;
+
+    }
+    
+}
+
+
+

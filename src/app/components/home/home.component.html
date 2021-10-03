@@ -1,0 +1,16 @@
+<div class="joke-form-container">
+
+    <div class="joke-container">
+        <p class="joke-text" style="white-space: pre-line;" >
+            {{ jokeString  || 'Loading...'}}
+        </p>
+        <span class="joke-category" *ngIf="jokeString !== null" >{{joke.category}}</span>
+    </div>
+    
+    <button class="joke-button"
+        (click)="handleClick()"
+    >
+        {{joke === undefined ? 'Get' : 'Another'}} Joke
+    </button>
+
+</div>
