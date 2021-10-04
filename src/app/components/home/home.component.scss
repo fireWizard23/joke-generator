@@ -63,12 +63,19 @@
 }
 
 
-
-
-@media(max-width: 500px) {
+@media(max-width: 800px) {
 
     .joke-text {
-        font-size: 1.3em;
+        font-size: 1.2em;
+    }
+
+}
+
+
+@media(max-width: 600px) {
+
+    .joke-text {
+        font-size: 0.9em;
     }
 
 }
@@ -76,7 +83,7 @@
 @media(max-width: 350px) {
 
     .joke-text {
-        font-size: 1em;
+        font-size: 0.7em;
     }
 
 }
