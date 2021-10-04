@@ -1,0 +1,41 @@
+.html-main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+}
+
+footer {
+    // position: absolute;
+    margin-top: 0.5rem;
+    bottom: 0;
+    background-color: var(--brand-color);
+    width: 100vw;
+    height: 10vh;
+    color: var(--white-text);
+
+    .container {
+        width: 90%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        .footer-brand {
+            justify-self: self-end;
+            font-size: 1.5rem;
+        }
+
+        .joke-api-link {
+            color: var(--white-text);
+        }
+
+    }
+
+
+}
+
+
+
+
+
