@@ -7,6 +7,10 @@
   --brand-color: rgb(13, 92, 13);
   --brand-color-darker: rgb(6, 70, 6);
 }
+.container {
+  width: 90%;
+  margin: auto;
+}
 body {
   background-color: #f3f3f3;
 }

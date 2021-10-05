@@ -58,8 +58,7 @@ export class JokePageComponent implements OnInit, OnDestroy {
         this.joke = joke;
         const jokeString = getJokeString(joke);
         if(jokeString != null) {
-          this._metaService.setDescription(jokeString.substring(0,30) + '...' +
-           ` Get more jokes using JokeGenerator. Joke Generator uses the JokeAPI to get the best jokes possible`);
+          this._metaService.setDescription(jokeString.substring(0,30) + '...' + `Get more jokes using JokeGenerator. Joke Generator uses the JokeAPI to get the best jokes possible`);
           this._metaService.setKeywords(this.joke.category);
         }
 
