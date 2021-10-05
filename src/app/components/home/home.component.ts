@@ -4,6 +4,8 @@ import { JokeHttpService} from 'src/app/services/joke-http-service/joke-http.ser
 import { DropdownComponent } from '../reusable/dropdown/dropdown.component';
 import {TwoPartJoke,Joke, SingleJoke, getJokeString} from '../../misc/joke.model';
 import { Option } from '../reusable/dropdown/dropdown.component';
+import { Title } from '@angular/platform-browser';
+import { MetaService } from 'src/app/services/meta-services/meta.service';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   jokeSuscription!: Subscription;
   
-  constructor(private httpService : JokeHttpService ) {}
+  constructor(private httpService : JokeHttpService, private _metaService : MetaService ) {}
 
 
   ngOnDestroy(): void {
@@ -27,7 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getNewJoke();
-    
+    this._metaService.updateTitle('Home');
   }
 
   private getNewJoke() {

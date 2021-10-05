@@ -14,24 +14,31 @@ export class JokeHttpService extends HttpService {
 
 
   public getSingleJoke(category: JokeCategory='any') : Observable<SingleJoke> {
-    return this.getJoke<SingleJoke>('single', category) ;
+    return this.getRandomJoke<SingleJoke>('single', category) ;
   }
 
 
   public getTwoPartJoke(category: JokeCategory='any') : Observable<TwoPartJoke> {
-    return this.getJoke<TwoPartJoke>('twopart', category) ;
+    return this.getRandomJoke<TwoPartJoke>('twopart', category) ;
+  }
+  
+  public getJokeById(id: number) : Observable<Joke> {
+    let url = this.combineUrl(env.JOKE_URL, 'any');
+    let params = new HttpParams().set('idRange', id);
+
+    return this.http.get<Joke>(url, {params});
   }
 
-  private getJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
+
+  private getRandomJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
     let params = new HttpParams().set('type', type);
     let url = this.combineUrl(env.JOKE_URL, category);
 
-    return this.http.get<T>(url, {
-      params
-    });
+    return this.http.get<T>(url, { params });
 
   } 
+
 
 
 }

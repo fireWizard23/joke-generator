@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { DropdownComponent } from './components/reusable/dropdown/dropdown.component';
+import { JokePageComponent } from './components/joke-page/joke-page.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 
 
@@ -16,6 +18,8 @@ import { DropdownComponent } from './components/reusable/dropdown/dropdown.compo
     HomeComponent,
     NavbarComponent,
     DropdownComponent,
+    JokePageComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
