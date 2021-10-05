@@ -47,7 +47,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.jokeSuscription = joke.subscribe((val) => {
       this.jokeString = getJokeString(val) || 'Error';
       this.joke = val;
-      console.log(val);
     });
 
     

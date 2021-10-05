@@ -5,9 +5,8 @@
             {{ jokeString  || 'Loading...' }}
         </p>
         <span class="joke-category" *ngIf="jokeString !== null" >{{joke.category }}
-
-            
         </span>
+        <a routerLink="/joke/{{joke.id}}" *ngIf="jokeString != null" >Go</a>
     </div>
     
     <button class="joke-button"

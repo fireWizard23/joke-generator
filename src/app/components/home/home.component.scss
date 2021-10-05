@@ -37,7 +37,7 @@
         text-overflow: clip;
         width: 10%;
         max-width: 10rem;
-        min-width: 7em;
+        min-width: 7rem;
         padding: 0.5rem;
         border-radius: 0.5rem;
         box-sizing: border-box;
@@ -62,7 +62,6 @@
 
 }
 
-
 @media(max-width: 800px) {
 
     .joke-text {
@@ -77,6 +76,12 @@
     .joke-text {
         font-size: 0.9em;
     }
+
+    .joke-category {
+        font-size: 0.7rem;
+        min-width: 5rem;
+    }
+
 
 }
 
