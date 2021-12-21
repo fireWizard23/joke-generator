@@ -1,9 +1,7 @@
 import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { JokeHttpService} from 'src/app/services/joke-http-service/joke-http.service';
-import { DropdownComponent } from '../reusable/dropdown/dropdown.component';
 import {TwoPartJoke,Joke, SingleJoke, getJokeString} from '../../misc/joke.model';
-import { Option } from '../reusable/dropdown/dropdown.component';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta-services/meta.service';
 
