@@ -26,25 +26,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    console.log("INIT")
+    if(!this.httpService.hasJoke) {
+      this.httpService.refreshCurrentJoke();
+    }
     this.getNewJoke();
     this._metaService.updateTitle('Home');
   }
 
   private getNewJoke() {
     this.jokeString = null;
-    let joke: Observable<Joke>;
-
-    let random = Math.random();
-    
-    if(random > 0.5) {
-      joke = this.httpService.getSingleJoke();
-    } else {
-      joke = this.httpService.getTwoPartJoke();
-    }
-    
-
-
-    this.jokeSuscription = joke.subscribe((val) => {
+    this.jokeSuscription = this.httpService.currentJoke.subscribe((val) => {
       this.jokeString = getJokeString(val) || 'Error';
       this.joke = val;
     });
@@ -53,6 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   handleClick(){
+    this.httpService.refreshCurrentJoke();
     this.getNewJoke();
     
 
