@@ -47,7 +47,11 @@ export class JokePageComponent implements OnInit, OnDestroy {
       }
 
 
-      this._jokeSubscription = this.httpService.getJokeById(id).subscribe((joke) => {
+      this._jokeSubscription = (
+        id !== this.httpService.currentJoke?.id ? 
+        this.httpService.getJokeById(id)
+         : this.httpService.currentJoke$
+      ).subscribe((joke) => {
         
         if(joke.error) {
           this.jokeError = jokeToError(joke);

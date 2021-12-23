@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/joke.model';
@@ -11,13 +12,21 @@ import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/j
 })
 export class JokeHttpService  {
 
-  private _currentJoke: Subject<Joke> = new ReplaySubject();
+  private _currentJoke$: Subject<Joke> = new ReplaySubject();
+
+  private _currentJoke?: Joke;
 
   private _hasJoke = false;
 
-  get currentJoke() {
-      return this._currentJoke;
+  get currentJoke$() {
+      return this._currentJoke$
   }
+
+  get currentJoke() {
+    return this._currentJoke;
+  }
+
+  
 
   get hasJoke(){
     return this._hasJoke;
@@ -33,12 +42,14 @@ export class JokeHttpService  {
     if(random > 0.5) {
       this.getSingleJoke()
         .subscribe((v) => {
-          this._currentJoke.next(v);
+          this._currentJoke$.next(v);
+          this._currentJoke = v;
         })
     } else {
       this.getTwoPartJoke()
         .subscribe((v) => {
-          this._currentJoke.next(v);
+          this._currentJoke$.next(v);
+          this._currentJoke = v;
         })
     }
   }
@@ -88,8 +99,5 @@ export class JokeHttpService  {
   }
 
 
-}
-function tap(tap: any) {
-  throw new Error('Function not implemented.');
 }
 
