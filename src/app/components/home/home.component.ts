@@ -26,7 +26,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log("INIT")
     if(!this.httpService.hasJoke) {
       this.httpService.refreshCurrentJoke();
     }
@@ -36,9 +35,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private getNewJoke() {
     this.jokeString = null;
+    
     this.jokeSuscription = this.httpService.currentJoke$.subscribe((val) => {
-      this.jokeString = getJokeString(val) || 'Error';
-      this.joke = val;
+      console.log("Subscribe was called!")
+      if(val != null) {
+        this.jokeString = getJokeString(val) || 'Error';
+        this.joke = val;
+      }
     });
 
     
@@ -46,7 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   handleClick(){
     this.httpService.refreshCurrentJoke();
-    this.getNewJoke();
+    // this.getNewJoke();
     
 
 
