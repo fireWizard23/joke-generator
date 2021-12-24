@@ -26,7 +26,7 @@ export class JokePageComponent implements OnInit, OnDestroy {
       ) { }
 
   ngOnDestroy(): void {
-    this._jokeSubscription?.unsubscribe();
+    this._jokeSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -52,7 +52,9 @@ export class JokePageComponent implements OnInit, OnDestroy {
         this.httpService.getJokeById(id)
          : this.httpService.currentJoke$
       ).subscribe((joke) => {
-        
+        if(joke == null) {
+          return;
+        }
         if(joke.error) {
           this.jokeError = jokeToError(joke);
           return;
