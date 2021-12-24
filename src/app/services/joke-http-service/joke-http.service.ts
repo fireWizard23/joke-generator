@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/joke.model';
@@ -12,7 +11,7 @@ import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/j
 })
 export class JokeHttpService  {
 
-  private _currentJoke$: Subject<Joke> = new ReplaySubject();
+  private _currentJoke$ = new BehaviorSubject<Joke | null>(null);
 
   private _currentJoke?: Joke;
 
