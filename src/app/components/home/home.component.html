@@ -9,7 +9,7 @@
         <a routerLink="/joke/{{joke.id}}" *ngIf="jokeString != null" >Go</a>
     </div>
     
-    <button class="joke-button"
+    <button class="joke-button" *ngIf="jokeString != null"
         (click)="handleClick()"
     >
         {{joke === undefined ? 'Get' : 'Another'}} Joke
