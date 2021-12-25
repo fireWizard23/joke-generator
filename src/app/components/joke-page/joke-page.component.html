@@ -1,4 +1,4 @@
-<div class="joke-form-container">
+<div class="joke-form-container" *ngIf="!jokeError; else error">
 
     <div class="joke-container">
         <p class="joke-text" style="white-space: pre-line;" >
@@ -15,4 +15,9 @@
     </button>
 
 </div>
+<ng-template #error>
+    <h3>
+        {{jokeError.message}} {{jokeError.additionalInfo}}
+    </h3>
+</ng-template>
 

@@ -64,6 +64,9 @@ export class JokePageComponent implements OnInit, OnDestroy {
             if(joke == null) {
               return;
             }
+            if(joke.error === true) {
+              this.jokeError = jokeToError(joke )
+            }
             this.joke = joke;
             this.jokeString = getJokeString(joke)
           })
