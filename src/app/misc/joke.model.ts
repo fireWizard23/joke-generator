@@ -20,26 +20,26 @@ export type JokeType = 'twopart' | 'single';
 export type JokeCategory = 'any' | 'programming' | "pun"
 
 export type Joke = {
-  error: boolean,
-  category: JokeCategory,
-  type: JokeType,
-  flags: JokeFlags,
-  explicit: boolean,
-  id: number,
-  safe: boolean,
-  lang: String,
+  readonly error: boolean,
+  readonly category: JokeCategory,
+  readonly type: JokeType,
+  readonly flags: JokeFlags,
+  readonly explicit: boolean,
+  readonly id: number,
+  readonly safe: boolean,
+  readonly lang: String,
   
 } 
 
 export type SingleJoke = {
-  joke: string,
-  type: 'single'
+  readonly joke: string,
+  readonly type: 'single'
 } & Joke
 
 export type TwoPartJoke = {
-  delivery: string,
-  setup: string,
-  type: 'twopart'
+  readonly delivery: string,
+  readonly setup: string,
+  readonly type: 'twopart'
 } & Joke
 
 
