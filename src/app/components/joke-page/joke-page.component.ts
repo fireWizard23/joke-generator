@@ -15,8 +15,11 @@ export class JokePageComponent implements OnInit, OnDestroy {
 
   joke!: Joke;
   jokeError!: JokeError;
+  jokeString!: string | null;
   
   private _jokeSubscription!: Subscription;
+
+  id!: number;
 
   constructor(
     private _router: Router,
@@ -26,53 +29,54 @@ export class JokePageComponent implements OnInit, OnDestroy {
       ) { }
 
   ngOnDestroy(): void {
-    this._jokeSubscription.unsubscribe();
+    this._jokeSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
-
-
-    this._activatedRoute.params.subscribe((val) => {
-
-      const id:number = Number(val.id);
-
-      console.log(id, id == NaN);
-
-      this._metaService.updateTitle(`${val.id}`);
-
-
-      if(Number.isNaN(id)) {
-        this._router.navigateByUrl(`/error?error=id&id=${val.id}asdf`)
-        return;
-      }
-
-
-      this._jokeSubscription = (
-        id !== this.httpService.currentJoke?.id ? 
-        this.httpService.getJokeById(id)
-         : this.httpService.currentJoke$
-      ).subscribe((joke) => {
-        if(joke == null) {
+    this.httpService.onJokeChange$.subscribe((v) => {
+      this._router.navigate(["joke", v.id])
+    })
+    this._activatedRoute.params
+      .subscribe((params) => {
+        const id = Number(params.id);
+        if(Number.isNaN(id)) {
+          this.jokeString = "Look at the you are L"
+          this.joke = {
+            category: "pun",
+            error: true,
+            explicit: false,
+            flags: {
+              nsfw: false,
+              political: false,
+              racist: false,
+               religious: false,
+               sexist: false
+            },
+            id,
+            lang: "Yo Mama",
+            safe: true,
+            type: "single"
+          }
           return;
         }
-        if(joke.error) {
-          this.jokeError = jokeToError(joke);
-          return;
-        }
+        this._jokeSubscription = this.httpService.getById(id)
+          .subscribe((joke) => {
+            if(joke == null) {
+              return;
+            }
+            this.joke = joke;
+            this.jokeString = getJokeString(joke)
+          })
 
-
-        this.joke = joke;
-        const jokeString = getJokeString(joke);
-        if(jokeString != null) {
-          this._metaService.setDescription(jokeString.substring(0,30) + '...' + `Get more jokes using JokeGenerator. Joke Generator uses the JokeAPI to get the best jokes possible`);
-          this._metaService.setKeywords(this.joke.category);
-        }
-
-      });
-    });
-
+      })
   }
 
+
+  handleClick() {
+    this.jokeString = null;
+    
+    this.httpService.changeCurrentJoke(); 
+  }
 
 
 

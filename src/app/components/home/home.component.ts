@@ -4,56 +4,35 @@ import { JokeHttpService} from 'src/app/services/joke-http-service/joke-http.ser
 import {TwoPartJoke,Joke, SingleJoke, getJokeString} from '../../misc/joke.model';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta-services/meta.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  template: '',
+  styles: ['']
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  jokeString!: string | null | undefined;
-  joke!: Joke;
-
-  jokeSuscription!: Subscription;
+  jokeSubscription!: Subscription;
   
-  constructor(private httpService : JokeHttpService, private _metaService : MetaService ) {}
+  constructor(private httpService : JokeHttpService, private _router: Router) {}
 
 
   ngOnDestroy(): void {
-    this.jokeSuscription.unsubscribe();
+    this.jokeSubscription?.unsubscribe();
   }
 
 
   ngOnInit(): void {
-    if(!this.httpService.hasJoke) {
-      this.httpService.refreshCurrentJoke();
-    }
-    this.getNewJoke();
-    this._metaService.updateTitle('Home');
-  }
+    this.jokeSubscription = this.httpService.onJokeChange$
+      .subscribe((v) => {
+        if(v === null) {return}
+        this._router.navigate(["joke", v.id]) 
+      })
+      this.httpService.getRandomJoke()
+  } 
 
-  private getNewJoke() {
-    this.jokeString = null;
-    
-    this.jokeSuscription = this.httpService.currentJoke$.subscribe((val) => {
-      console.log("Subscribe was called!")
-      if(val != null) {
-        this.jokeString = getJokeString(val) || 'Error';
-        this.joke = val;
-      }
-    });
-
-    
-  }
-
-  handleClick(){
-    this.httpService.refreshCurrentJoke();
-    // this.getNewJoke();
-    
-
-
-  }
+  
   
 
 

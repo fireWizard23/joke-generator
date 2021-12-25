@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import {shareReplay, tap} from 'rxjs/operators'
 import { environment as env } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/joke.model';
-
+import { Map } from 'immutable';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Injectable({
@@ -11,77 +13,86 @@ import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/j
 })
 export class JokeHttpService  {
 
-  private _currentJoke$ = new BehaviorSubject<Joke | null>(null);
 
-  private _currentJoke?: Joke;
+  currentJoke?: Joke;
 
-  private _hasJoke = false;
+  _cachedJokes = Map();
 
-  get currentJoke$() {
-      return this._currentJoke$
+  private _onJokeChange$ = new Subject<Joke>();
+
+  public get onJokeChange$() {
+    return this._onJokeChange$.asObservable();
   }
 
-  get currentJoke() {
-    return this._currentJoke;
-  }
-
-  
-
-  get hasJoke(){
-    return this._hasJoke;
-  }
-
-  constructor(protected http : HttpClient ) {
-    this.refreshCurrentJoke();
-  }
-
-  public refreshCurrentJoke() {
-    let random = Math.random();
-    this._hasJoke = true;
-    if(random > 0.5) {
-      this.getSingleJoke()
-        .subscribe((v) => {
-          this._currentJoke$.next(v);
-          this._currentJoke = v;
+  constructor(protected http : HttpClient, _activatedRoute: ActivatedRoute ) {
+    _activatedRoute.params.subscribe((param) => {
+      const id = param.id;
+      if(id != null) {
+        return;
+      }
+      this.getById(Math.round(Math.random()))
+        .subscribe((joke) => {
+          this.currentJoke = joke;
         })
+    })
+  }
+
+  public changeCurrentJoke() {
+    this.getRandomJoke();
+  }
+
+  public getRandomJoke() {
+    const random = Math.random();
+    if (random > 0.5) {
+      this.getSingleJoke().subscribe((v) => {
+        this._onJokeChange$.next(v);
+        this.currentJoke = v;
+      });
     } else {
-      this.getTwoPartJoke()
-        .subscribe((v) => {
-          this._currentJoke$.next(v);
-          this._currentJoke = v;
-        })
+      this.getTwoPartJoke().subscribe((v) => {
+        this._onJokeChange$.next(v);
+        this.currentJoke = v;
+      });
     }
   }
 
   public getSingleJoke(category: JokeCategory='any') : Observable<SingleJoke> {
-    return this.getRandomJoke<SingleJoke>('single', category) ;
+    return this.getJoke<SingleJoke>('single', category) ;
   }
 
 
   public getTwoPartJoke(category: JokeCategory='any') : Observable<TwoPartJoke> {
-    return this.getRandomJoke<TwoPartJoke>('twopart', category) ;
-  }
-  
-  public getJokeById(id: number) : Observable<Joke> {
-    let url = this.combineUrl(env.JOKE_URL, 'any');
-    let params = new HttpParams().set('idRange', id);
-
-    return this.http.get<Joke>(url, {params});
+    return this.getJoke<TwoPartJoke>('twopart', category) ;
   }
 
-
-  private getRandomJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
+  public getJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
     let params = new HttpParams().set('type', type);
-    let url = this.combineUrl(env.JOKE_URL, category);
-
-    return this.http.get<T>(url, { params });
+    let url = `${category}`;
+    return this.get<T>(url, { params });
 
   } 
 
-  private getByUrl<T extends object>(url: string) : Observable<T> {
-    // let params = new HttpParams().set('type', 'single');
-    return this.http.get<T>(this.combineUrl(env.JOKE_URL, url));
+  public getById<T extends Joke = Joke>(id: number) {
+    const joke = this._cachedJokes.get(id);
+    if(joke != undefined) {
+      return of(joke as Joke);
+    }
+
+    let params = new HttpParams().set('idRange', id);
+
+    return this.get<T>('any', {params});
+  }
+
+  private get<T extends Joke>(relativeUrl: string, opt: {}) {
+    const url = this.combineUrl(env.JOKE_URL, relativeUrl)
+    return this.http.get<T>(url, opt)
+      .pipe(
+        shareReplay(),
+        tap((v) => {
+          this._cachedJokes= this._cachedJokes.set(v.id, v);
+        })
+      );
   }
 
   private combineUrl(url1: string, url2: string ) : string {
@@ -99,4 +110,5 @@ export class JokeHttpService  {
 
 
 }
+
 

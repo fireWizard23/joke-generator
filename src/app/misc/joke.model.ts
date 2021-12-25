@@ -17,7 +17,7 @@ export type JokeError = {
 }
   
 export type JokeType = 'twopart' | 'single';
-export type JokeCategory = 'any' | 'programming' 
+export type JokeCategory = 'any' | 'programming' | "pun"
 
 export type Joke = {
   error: boolean,
