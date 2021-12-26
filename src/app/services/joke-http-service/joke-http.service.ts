@@ -20,7 +20,7 @@ export class JokeHttpService  {
 
   private _onJokeChange$ = new Subject<Joke>();
 
-  public get onJokeChange$() {
+  public get onJokeChange$() : Observable<Joke> {
     return this._onJokeChange$.asObservable();
   }
 
@@ -68,22 +68,22 @@ export class JokeHttpService  {
   public getJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
     return this.getAdvanced<T>(category, {
-      format: type
+      type
     })
   } 
 
-  public getById<T extends Joke = Joke>(id: number) {
+  public getById<T extends Joke = Joke>(id: number): Observable<Joke> {
     const joke = this._cachedJokes.get(id);
     if(joke != undefined) {
       return of(joke as Joke);
     }
 
-    return this.getAdvanced('any', {
+    return this.getAdvanced<T>('any', {
       idRange: id
     })
   }
 
-  public getAdvanced<T extends Joke>(category: JokeCategory, opts: JokeUrlParams) {
+  public getAdvanced<T extends Joke>(category: JokeCategory, opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
     for(const opt in opts) {
@@ -106,7 +106,7 @@ export class JokeHttpService  {
       reportProgress?: boolean;
       responseType?: 'json';
       withCredentials?: boolean; }
-    ) {
+    ): Observable<T> {
     const url = this.combineUrl(env.JOKE_URL, category)
     return this.http.get<T>(url, opt)
       .pipe(
@@ -134,7 +134,7 @@ export class JokeHttpService  {
 }
 
 interface JokeUrlParams {
-  format?: JokeType;
+  type?: JokeType;
   blackListFlags?: JokeFlags;
   lang?: JokeLang;
   idRange?: number;
