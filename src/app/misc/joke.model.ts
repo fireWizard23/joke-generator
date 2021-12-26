@@ -18,6 +18,7 @@ export type JokeError = {
   
 export type JokeType = 'twopart' | 'single';
 export type JokeCategory = 'any' | 'programming' | "pun" | "misc" | "dark" | "spooky" | "christmas"
+export type JokeLang = string;
 
 export type Joke = {
   readonly error: boolean,
@@ -27,7 +28,7 @@ export type Joke = {
   readonly explicit: boolean,
   readonly id: number,
   readonly safe: boolean,
-  readonly lang: String,
+  readonly lang: JokeLang,
   
 } 
 
