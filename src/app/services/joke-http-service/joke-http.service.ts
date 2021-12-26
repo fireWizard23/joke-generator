@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import {shareReplay, tap} from 'rxjs/operators'
 import { environment as env } from 'src/environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType} from '../../misc/joke.model';
+import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
+import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType, JokeFlags, JokeLang} from '../../misc/joke.model';
 import { Map } from 'immutable';
 import { ActivatedRoute } from '@angular/router';
 
@@ -67,10 +67,9 @@ export class JokeHttpService  {
 
   public getJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
-    let params = new HttpParams().set('type', type);
-    let url = `${category}`;
-    return this.get<T>(url, { params });
-
+    return this.getAdvanced<T>(category, {
+      format: type
+    })
   } 
 
   public getById<T extends Joke = Joke>(id: number) {
@@ -79,13 +78,36 @@ export class JokeHttpService  {
       return of(joke as Joke);
     }
 
-    let params = new HttpParams().set('idRange', id);
-
-    return this.get<T>('any', {params});
+    return this.getAdvanced('any', {
+      idRange: id
+    })
   }
 
-  private get<T extends Joke>(relativeUrl: string, opt: {}) {
-    const url = this.combineUrl(env.JOKE_URL, relativeUrl)
+  public getAdvanced<T extends Joke>(category: JokeCategory, opts: JokeUrlParams) {
+    const _opts = opts as any;
+    let params = new HttpParams();
+    for(const opt in opts) {
+      const val = _opts[opt];
+      params = params.set(opt, val);
+    }
+    return this.get<T>(category, {params});
+  }
+
+  private get<T extends Joke>(category: JokeCategory, opt: 
+    {
+      headers?: HttpHeaders | {
+          [header: string]: string | string[];
+      };
+      context?: HttpContext;
+      observe?: 'body';
+      params?: HttpParams | {
+          [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+      };
+      reportProgress?: boolean;
+      responseType?: 'json';
+      withCredentials?: boolean; }
+    ) {
+    const url = this.combineUrl(env.JOKE_URL, category)
     return this.http.get<T>(url, opt)
       .pipe(
         shareReplay(),
@@ -111,4 +133,13 @@ export class JokeHttpService  {
 
 }
 
+interface JokeUrlParams {
+  format?: JokeType;
+  blackListFlags?: JokeFlags;
+  lang?: JokeLang;
+  idRange?: number;
+  contains?: string;
+  amount?:number;
+  isSafe?: boolean;
+}
 
