@@ -8,6 +8,7 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { JokePageComponent } from './components/joke-page/joke-page.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { ShareModule } from 'ngx-sharebuttons';
 
 
 
@@ -22,7 +23,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ShareModule
   ],
   providers: [ 
   ],

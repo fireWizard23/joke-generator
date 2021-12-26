@@ -69,6 +69,8 @@ export class JokePageComponent implements OnInit, OnDestroy {
             }
             this.joke = joke;
             this.jokeString = getJokeString(joke)
+            this._metaService.setDescription(this.jokeString!)
+            this._metaService.updateTitle(joke.id.toString());
           })
 
       })
