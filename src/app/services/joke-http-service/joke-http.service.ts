@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import {shareReplay, tap} from 'rxjs/operators'
 import { environment as env } from 'src/environments/environment';
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
-import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType, JokeFlags, JokeLang, AnyJoke} from '../../misc/joke.model';
+import {TwoPartTypeJoke,Joke, SingleTypeJoke, JokeCategory, JokeType, JokeFlags, JokeLang, AnyTypeJoke} from '../../misc/joke.model';
 import { Map } from 'immutable';
 import { ActivatedRoute } from '@angular/router';
 
@@ -18,9 +18,9 @@ export class JokeHttpService  {
 
   _cachedJokes = Map();
 
-  private _onJokeChange$ = new Subject<AnyJoke>();
+  private _onJokeChange$ = new Subject<AnyTypeJoke>();
 
-  public get onJokeChange$() : Observable<AnyJoke> {
+  public get onJokeChange$() : Observable<AnyTypeJoke> {
     return this._onJokeChange$.asObservable();
   }
 
@@ -56,26 +56,26 @@ export class JokeHttpService  {
     }
   }
 
-  public getSingleJoke(category: JokeCategory='any') : Observable<SingleJoke> {
-    return this.getJoke<SingleJoke>('single', category) ;
+  public getSingleJoke(category: JokeCategory='any') : Observable<SingleTypeJoke> {
+    return this.getJoke<SingleTypeJoke>('single', category) ;
   }
 
 
-  public getTwoPartJoke(category: JokeCategory='any') : Observable<TwoPartJoke> {
-    return this.getJoke<TwoPartJoke>('twopart', category) ;
+  public getTwoPartJoke(category: JokeCategory='any') : Observable<TwoPartTypeJoke> {
+    return this.getJoke<TwoPartTypeJoke>('twopart', category) ;
   }
 
-  public getJoke<T extends AnyJoke>(type: JokeType, category: JokeCategory) : Observable<T> {
+  public getJoke<T extends AnyTypeJoke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
     return this.getAdvanced<T>(category, {
       type
     })
   } 
 
-  public getById<T extends AnyJoke = AnyJoke>(id: number): Observable<AnyJoke> {
+  public getById<T extends AnyTypeJoke = AnyTypeJoke>(id: number): Observable<AnyTypeJoke> {
     const joke = this._cachedJokes.get(id);
     if(joke != undefined) {
-      return of(joke as AnyJoke);
+      return of(joke as AnyTypeJoke);
     }
 
     return this.getAdvanced<T>('any', {
@@ -83,7 +83,7 @@ export class JokeHttpService  {
     })
   }
 
-  public getAdvanced<T extends AnyJoke>(category: JokeCategory, opts: JokeUrlParams): Observable<T> {
+  public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory, opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
     for(const opt in opts) {
@@ -93,7 +93,7 @@ export class JokeHttpService  {
     return this.get<T>(category, {params});
   }
 
-  private get<T extends AnyJoke>(category: JokeCategory, opt: 
+  private get<T extends AnyTypeJoke>(category: JokeCategory, opt: 
     {
       headers?: HttpHeaders | {
           [header: string]: string | string[];
