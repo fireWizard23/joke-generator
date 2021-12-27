@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { getJokeString, Joke, JokeError, jokeToError } from 'src/app/misc/joke.model';
+import { AnyJoke, getJokeString, Joke, JokeError, jokeToError } from 'src/app/misc/joke.model';
 import { JokeHttpService } from 'src/app/services/joke-http-service/joke-http.service';
 import { MetaService } from 'src/app/services/meta-services/meta.service';
 
@@ -13,7 +13,7 @@ import { MetaService } from 'src/app/services/meta-services/meta.service';
 })
 export class JokePageComponent implements OnInit, OnDestroy {
 
-  joke!: Joke;
+  joke!: AnyJoke;
   jokeError!: JokeError;
   jokeString!: string | null;
   

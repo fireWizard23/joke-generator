@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import {shareReplay, tap} from 'rxjs/operators'
 import { environment as env } from 'src/environments/environment';
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
-import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType, JokeFlags, JokeLang} from '../../misc/joke.model';
+import {TwoPartJoke,Joke, SingleJoke, JokeCategory, JokeType, JokeFlags, JokeLang, AnyJoke} from '../../misc/joke.model';
 import { Map } from 'immutable';
 import { ActivatedRoute } from '@angular/router';
 
@@ -18,9 +18,9 @@ export class JokeHttpService  {
 
   _cachedJokes = Map();
 
-  private _onJokeChange$ = new Subject<Joke>();
+  private _onJokeChange$ = new Subject<AnyJoke>();
 
-  public get onJokeChange$() : Observable<Joke> {
+  public get onJokeChange$() : Observable<AnyJoke> {
     return this._onJokeChange$.asObservable();
   }
 
@@ -65,17 +65,17 @@ export class JokeHttpService  {
     return this.getJoke<TwoPartJoke>('twopart', category) ;
   }
 
-  public getJoke<T extends Joke>(type: JokeType, category: JokeCategory) : Observable<T> {
+  public getJoke<T extends AnyJoke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
     return this.getAdvanced<T>(category, {
       type
     })
   } 
 
-  public getById<T extends Joke = Joke>(id: number): Observable<Joke> {
+  public getById<T extends AnyJoke = AnyJoke>(id: number): Observable<AnyJoke> {
     const joke = this._cachedJokes.get(id);
     if(joke != undefined) {
-      return of(joke as Joke);
+      return of(joke as AnyJoke);
     }
 
     return this.getAdvanced<T>('any', {
@@ -83,7 +83,7 @@ export class JokeHttpService  {
     })
   }
 
-  public getAdvanced<T extends Joke>(category: JokeCategory, opts: JokeUrlParams): Observable<T> {
+  public getAdvanced<T extends AnyJoke>(category: JokeCategory, opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
     for(const opt in opts) {
@@ -93,7 +93,7 @@ export class JokeHttpService  {
     return this.get<T>(category, {params});
   }
 
-  private get<T extends Joke>(category: JokeCategory, opt: 
+  private get<T extends AnyJoke>(category: JokeCategory, opt: 
     {
       headers?: HttpHeaders | {
           [header: string]: string | string[];
@@ -133,7 +133,7 @@ export class JokeHttpService  {
 
 }
 
-interface JokeUrlParams {
+export interface JokeUrlParams {
   type?: JokeType;
   blackListFlags?: JokeFlags;
   lang?: JokeLang;

@@ -20,8 +20,11 @@ export type JokeType = 'twopart' | 'single';
 export type JokeCategory = 'any' | 'programming' | "pun" | "misc" | "dark" | "spooky" | "christmas"
 export type JokeLang = string;
 
-export type Joke = {
-  readonly error: boolean,
+export interface JokeRequestData {
+  readonly error: boolean;
+}
+
+export interface Joke {
   readonly category: JokeCategory,
   readonly type: JokeType,
   readonly flags: JokeFlags,
@@ -32,16 +35,26 @@ export type Joke = {
   
 } 
 
-export type SingleJoke = {
+export interface AnyJoke  extends JokeRequestData, Joke{
+  
+} 
+
+export interface SingleJoke extends JokeRequestData, Joke {
   readonly joke: string,
   readonly type: 'single'
-} & Joke
+}
 
-export type TwoPartJoke = {
+export interface TwoPartJoke extends JokeRequestData, Joke {
   readonly delivery: string,
   readonly setup: string,
   readonly type: 'twopart'
-} & Joke
+}
+
+export interface MultiJoke extends JokeRequestData{
+
+  amount: number;
+  jokes: Joke[]
+}
 
 
 export function jokeToError(joke: Joke) : JokeError {
