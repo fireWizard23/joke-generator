@@ -35,22 +35,22 @@ export interface Joke {
   
 } 
 
-export interface AnyJoke  extends JokeRequestData, Joke{
+export interface AnyTypeJoke  extends JokeRequestData, Joke{
   
 } 
 
-export interface SingleJoke extends JokeRequestData, Joke {
+export interface SingleTypeJoke extends JokeRequestData, Joke {
   readonly joke: string,
   readonly type: 'single'
 }
 
-export interface TwoPartJoke extends JokeRequestData, Joke {
+export interface TwoPartTypeJoke extends JokeRequestData, Joke {
   readonly delivery: string,
   readonly setup: string,
   readonly type: 'twopart'
 }
 
-export interface MultiJoke extends JokeRequestData{
+export interface MultipleJokes extends JokeRequestData{
 
   amount: number;
   jokes: Joke[]
@@ -63,11 +63,11 @@ export function jokeToError(joke: Joke) : JokeError {
 
 export function getJokeString(joke : Joke) : string | null {
     if(joke.type === 'twopart') {
-      let twopartJoke = joke as TwoPartJoke;
+      let twopartJoke = joke as TwoPartTypeJoke;
       return `${twopartJoke.setup} \n${twopartJoke.delivery}`;
 
     } else if(joke.type == 'single') {
-      let singleJoke = joke as SingleJoke;
+      let singleJoke = joke as SingleTypeJoke;
 
       return singleJoke.joke;
     }
