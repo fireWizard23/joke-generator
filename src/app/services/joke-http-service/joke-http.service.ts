@@ -67,7 +67,7 @@ export class JokeHttpService  {
 
   public getJoke<T extends AnyTypeJoke>(type: JokeType, category: JokeCategory) : Observable<T> {
 
-    return this.getAdvanced<T>(category, {
+    return this.getAdvanced<T>([category], {
       type
     })
   } 
@@ -78,22 +78,44 @@ export class JokeHttpService  {
       return of(joke as AnyTypeJoke);
     }
 
-    return this.getAdvanced<T>('any', {
+    return this.getAdvanced<T>(['any'], {
       idRange: id
     })
   }
 
-  public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory, opts: JokeUrlParams): Observable<T> {
+  public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory[], opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
-    for(const opt in opts) {
-      const val = _opts[opt];
-      params = params.set(opt, val);
-    }
+    Object.keys(opts).forEach((key) => {
+      let currentValue = _opts[key];
+      if(key === "flags") {
+        let index = 0;
+        const keys = Object.keys(currentValue);
+        
+        const length = keys.reduce((result, item) => {
+          result += currentValue[item] ? 1 : 0;
+          return result;
+        }, 0);
+
+        currentValue = keys.reduce((result, current) => {
+          // debugger;
+          let final = result + currentValue[current] ? current : '';
+          if(index < length) {
+            final += ','
+          }
+          index++;
+          return final;
+        }, '')
+        key = "blacklistFlags"
+      }
+      params = params.set(key, currentValue)
+    })
+
+    
     return this.get<T>(category, {params});
   }
 
-  private get<T extends AnyTypeJoke>(category: JokeCategory, opt: 
+  private get<T extends AnyTypeJoke>(category: JokeCategory[], opt: 
     {
       headers?: HttpHeaders | {
           [header: string]: string | string[];
@@ -107,7 +129,17 @@ export class JokeHttpService  {
       responseType?: 'json';
       withCredentials?: boolean; }
     ): Observable<T> {
-    const url = this.combineUrl(env.JOKE_URL, category)
+    let index = 1;
+    const url = this.combineUrl(env.JOKE_URL, category.reduce((result, v: any) => {
+      result += v;
+      if(index < category.length) {
+        console.log(index, category.length)
+        result += ','
+      }
+      index++;
+      return result;
+    }, ""))
+    
     return this.http.get<T>(url, opt)
       .pipe(
         shareReplay(),
@@ -129,6 +161,7 @@ export class JokeHttpService  {
       return url1 + url2;
 
   }
+
 
 
 }
