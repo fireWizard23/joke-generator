@@ -49,8 +49,9 @@ export class JokePageComponent implements OnInit, OnDestroy {
               nsfw: false,
               political: false,
               racist: false,
-               religious: false,
-               sexist: false
+              religious: false,
+              sexist: false,
+              explicit: false,
             },
             id,
             lang: "Yo Mama",
