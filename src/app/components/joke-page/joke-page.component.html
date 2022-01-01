@@ -6,7 +6,7 @@
         </p>
         <span class="joke-category" *ngIf="jokeString != null" >{{joke.category }}
         </span>
-        <share-button shareButton="facebook" url="{{'https://jokeg.netlify.app/joke/' + joke.id}}">Share</share-button>
+        <share-button *ngIf="jokeString != null" shareButton="facebook" url="{{'https://jokeg.netlify.app/joke/' + joke.id}}">Share</share-button>
     </div>
     
     <button class="joke-button" *ngIf="jokeString != null"
