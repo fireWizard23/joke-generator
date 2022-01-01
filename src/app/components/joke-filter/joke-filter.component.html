@@ -1,24 +1,28 @@
 
-<p *ngIf="joke">
+<!-- <p *ngIf="joke">
     {{joke | async | json}}
-</p>
+</p> -->
 
 
-<form [formGroup]="myForm" (submit)="handleSubmit()">
-    <div class="type input-container">
-        <p>Type</p>
-        <input type="radio" name="type" id="any" formControlName="type" value="any">
-        <label for="any">Any</label>
-        <br>
-        <input type="radio" name="type" id="single" formControlName="type" value="single">
-        <label for="single">Single</label>
-        <br>
-        <input type="radio" name="type" id="twopart" formControlName="type" value="twopart">
-        <label for="twopart">Two Part</label>
-    </div>    
-    <div class="amount input-container">
-        <label for="amount">Amount</label>
-        <input type="number" name="amount" id="amount" value="1" min="0" max="99" formControlName="amount">
+<form [formGroup]="form" 
+(ngSubmit)="onFormSubmit(form.value)"
+>
+    <div class="categories input-container"
+    formArrayName="categories"
+    >
+        <label 
+        *ngFor="let c of categories.controls; let i = index;"
+        for="{{c.value.name}}"
+        [formGroupName]="i"
+        >
+            <input type="checkbox" name="categories"  id={{c.value.name}} 
+            formControlName="value"
+            [attr.disabled]="(c.value.name != 'any' && isAnyChecked) || null "
+            (change)="onCategoriesChange($event)"
+            >
+            {{c.value.name}} 
+            {{c.value.value}}
+        </label>
     </div>
     <input type="submit" value="Submit" >
 </form>

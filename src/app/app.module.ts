@@ -10,7 +10,7 @@ import { JokePageComponent } from './components/joke-page/joke-page.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ShareModule } from 'ngx-sharebuttons';
 import { JokeFilterComponent } from './components/joke-filter/joke-filter.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -28,7 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     HttpClientModule,
     ShareModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [ 
   ],
