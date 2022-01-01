@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Joke } from 'src/app/misc/joke.model';
+import { AnyTypeJoke, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
 
 @Component({
@@ -13,16 +13,15 @@ export class JokeFilterComponent implements OnInit {
 
   form!: FormGroup;
 
+  joke!: Observable<AnyTypeJoke | MultipleJokes>;
+
   get categories() {
     return this.form.get('categories') as FormArray;
   }
 
-  get isAnyChecked() {
-    return this.categories.value.find((v: any) => v.name === 'any').value;
+  get blacklistFlags() {
+    return this.form.get('blacklistFlags') as FormArray;
   }
-
-  
-
 
   constructor(private http: JokeHttpService, private fb : FormBuilder) { }
 
@@ -45,10 +44,49 @@ export class JokeFilterComponent implements OnInit {
             name: 'dark',
             value: false,
           },
+          {
+            name: 'programming',
+            value: false,
+          },
+          {
+            name: 'spooky',
+            value: false,
+          },
+          {
+            name: 'christmas',
+            value: false,
+          },
         ].map((v) => {
           return this.fb.group({...v})
         })
       ),
+      language: 'english',
+      blacklistFlags: this.fb.array([
+        {
+          name: "nsfw",
+          value: false,
+        },
+        {
+          name: "religious",
+          value: false,
+        },
+        {
+          name: "political",
+          value: false,
+        },
+        {
+          name: "racist",
+          value: false,
+        },
+        {
+          name: "sexist",
+          value: false,
+        },
+        {
+          name: "explicit",
+          value: false,
+        },
+      ].map((v) => this.fb.group(v)))
     });
 
     console.log(this.categories)
@@ -57,16 +95,22 @@ export class JokeFilterComponent implements OnInit {
 
   onCategoriesChange(e: any) {
 
+    const value = this.categories.value.reduce((result: any, v: any) => {
+      result[v.name] = v.value;
+      return result;
+    }, {});
+
     if(e.target.id != 'any') {
+      if(value.any === true) {
+        this.categories.controls.forEach((v) => {
+          v.patchValue({
+            value: v.value.name == 'any' ? false : v.value.value,
+          })
+        })
+      }
       return;
     }
-
-
-      const value = this.categories.value.reduce((result: any, v: any) => {
-        result[v.name] = v.value;
-        return result;
-      }, {});
-  
+      
       if(value.any === true) {
         this.categories.controls.forEach((v) => {
           v.patchValue({
@@ -78,6 +122,23 @@ export class JokeFilterComponent implements OnInit {
   
   onFormSubmit(value: any) {
     console.log(value)
+    
+    const categories = value.categories.reduce((result: string[], item: any) => {
+      item.value === true && result.push(item.name)
+      return result;
+    }, [])
+
+    delete value.categories;
+
+    console.log(categories)
+
+    value.blacklistFlags = value.blacklistFlags.reduce((result: any, v: any) => {
+      result[v.name ] = v.value;
+      return result;
+    }, {})
+
+
+    this.joke = this.http.getAdvanced(categories, value)
   }
 
 }

@@ -1,7 +1,7 @@
 
-<!-- <p *ngIf="joke">
+<p *ngIf="joke">
     {{joke | async | json}}
-</p> -->
+</p>
 
 
 <form [formGroup]="form" 
@@ -17,11 +17,28 @@
         >
             <input type="checkbox" name="categories"  id={{c.value.name}} 
             formControlName="value"
-            [attr.disabled]="(c.value.name != 'any' && isAnyChecked) || null "
             (change)="onCategoriesChange($event)"
             >
             {{c.value.name}} 
             {{c.value.value}}
+            <br>
+        </label>
+    </div>
+    <div class="flags input-container"
+    formArrayName="blacklistFlags"
+    >
+        <h3>Blacklist Flags</h3>
+        <label 
+        *ngFor="let c of blacklistFlags.controls; let i = index;"
+        for="{{c.value.name}}"
+        [formGroupName]="i"
+        >
+            <input type="checkbox" name="categories"  id={{c.value.name}} 
+            formControlName="value"
+            >
+            {{c.value.name}} 
+            {{c.value.value}}
+            <br>
         </label>
     </div>
     <input type="submit" value="Submit" >

@@ -86,30 +86,26 @@ export class JokeHttpService  {
   public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory[], opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
-    Object.keys(opts).forEach((key) => {
+    for(const key in _opts) {
       let currentValue = _opts[key];
-      if(key === "flags") {
-        let index = 0;
-        const keys = Object.keys(currentValue);
+      if(key === "blacklistFlags") {
+        let str = "";
         
-        const length = keys.reduce((result, item) => {
-          result += currentValue[item] ? 1 : 0;
-          return result;
-        }, 0);
-
-        currentValue = keys.reduce((result, current) => {
-          // debugger;
-          let final = result + currentValue[current] ? current : '';
-          if(index < length) {
-            final += ','
+        const keys = Object.keys(currentValue).filter((k) => {
+          return currentValue[k] === true;
+        });
+        
+        keys.forEach((v, index) => {
+          str += v;
+          if(index < keys.length - 1) {
+            str += ','
           }
-          index++;
-          return final;
-        }, '')
-        key = "blacklistFlags"
+        })
+        currentValue = str;
       }
-      params = params.set(key, currentValue)
-    })
+
+      params = params.set(key, currentValue);
+    }
 
     
     return this.get<T>(category, {params});
