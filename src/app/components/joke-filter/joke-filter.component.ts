@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AnyTypeJoke, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
+
 
 @Component({
   selector: 'app-joke-filter',
@@ -15,6 +16,8 @@ export class JokeFilterComponent implements OnInit {
 
   joke!: Observable<AnyTypeJoke | MultipleJokes>;
 
+  oneTypeIsChecked = false;
+
   get categories() {
     return this.form.get('categories') as FormArray;
   }
@@ -22,6 +25,11 @@ export class JokeFilterComponent implements OnInit {
   get blacklistFlags() {
     return this.form.get('blacklistFlags') as FormArray;
   }
+
+  get type() {
+    return this.form.get('type') as FormArray;
+  }
+
 
   constructor(private http: JokeHttpService, private fb : FormBuilder) { }
 
@@ -86,10 +94,22 @@ export class JokeFilterComponent implements OnInit {
           name: "explicit",
           value: false,
         },
-      ].map((v) => this.fb.group(v)))
+      ].map((v) => this.fb.group(v))),
+      type: 
+        this.fb.array([
+          {
+            name: "single",
+            value: true,
+          },
+          {
+            name: "twopart",
+            displayName: "Two Part",
+            value: true,
+          }
+        ].map((v) => this.fb.group(v))), 
+
     });
 
-    console.log(this.categories)
   }
 
 
@@ -119,6 +139,22 @@ export class JokeFilterComponent implements OnInit {
         })
       }
     }
+
+  onTypeChange(e: any) {
+    const noneIsChecked = (this.type.value as any[]).every((v) => v.value === false)    
+
+
+    noneIsChecked && this.type.controls.forEach((v) => {
+      if(v.value.name === e.target.id) {
+        v.patchValue({
+          value: true
+        })
+        this.oneTypeIsChecked = noneIsChecked;
+      }
+    })
+
+
+  }
   
   onFormSubmit(value: any) {
     console.log(value)
@@ -128,11 +164,9 @@ export class JokeFilterComponent implements OnInit {
       return result;
     }, [])
 
-    delete value.categories;
-
     console.log(categories)
 
-    value.blacklistFlags = value.blacklistFlags.reduce((result: any, v: any) => {
+    value.blacklistFlags = Object.keys(value.blacklistFlags).reduce((result: any, v: any) => {
       result[v.name ] = v.value;
       return result;
     }, {})

@@ -33,7 +33,7 @@
         for="{{c.value.name}}"
         [formGroupName]="i"
         >
-            <input type="checkbox" name="categories"  id={{c.value.name}} 
+            <input type="checkbox" name="blacklistFlags"  id={{c.value.name}} 
             formControlName="value"
             >
             {{c.value.name}} 
@@ -41,5 +41,27 @@
             <br>
         </label>
     </div>
+    <div class="type input-container"
+    formArrayName="type"
+    >
+        <h3>Joke Type</h3>
+        <label 
+        *ngFor="let c of type.controls; let i = index;"
+        for="{{c.value.name}}"
+        [formGroupName]="i"
+        >
+            <input type="checkbox" name="type"  id={{c.value.name}} 
+            formControlName="value"
+            (change)="onTypeChange($event)"
+            >
+            {{c.value.displayName || c.value.name}} 
+            {{c.value.value}}
+            <br>
+        </label>
+        <p class="warning"  *ngIf="oneTypeIsChecked">
+            There must be atleast one value
+        </p>
+    </div>
+    
     <input type="submit" value="Submit" >
 </form>
