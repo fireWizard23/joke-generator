@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { AnyTypeJoke, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
 
-
 @Component({
   selector: 'app-joke-filter',
   templateUrl: './joke-filter.component.html',
@@ -153,25 +152,35 @@ export class JokeFilterComponent implements OnInit {
       }
     })
 
+    if(!noneIsChecked) {
+      this.oneTypeIsChecked = false;
+    }
+
 
   }
   
-  onFormSubmit(value: any) {
-    console.log(value)
+  onFormSubmit(_value: any) {
+
+    const value = JSON.parse(JSON.stringify(_value))
     
     const categories = value.categories.reduce((result: string[], item: any) => {
       item.value === true && result.push(item.name)
       return result;
     }, [])
 
-    console.log(categories)
+    delete value.categories;
 
-    value.blacklistFlags = Object.keys(value.blacklistFlags).reduce((result: any, v: any) => {
+    value.blacklistFlags = value.blacklistFlags.reduce((result: any, v: any) => {
       result[v.name ] = v.value;
       return result;
     }, {})
 
+    value.type = value.type.reduce((result: any, v: any) => {
+      result[v.name] = v.value;
+      return result;
+    }, {})
 
+    console.log(value)
     this.joke = this.http.getAdvanced(categories, value)
   }
 
