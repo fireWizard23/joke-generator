@@ -94,6 +94,10 @@ export class JokeHttpService  {
         const keys = Object.keys(currentValue).filter((k) => {
           return currentValue[k] === true;
         });
+
+        if(keys.length == 0) {
+          continue;
+        }
         
         keys.forEach((v, index) => {
           str += v;
