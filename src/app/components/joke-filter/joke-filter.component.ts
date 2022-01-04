@@ -106,6 +106,7 @@ export class JokeFilterComponent implements OnInit {
             value: true,
           }
         ].map((v) => this.fb.group(v))), 
+      contains: ""
 
     });
 
