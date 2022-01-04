@@ -88,7 +88,7 @@ export class JokeHttpService  {
     let params = new HttpParams();
     for(const key in _opts) {
       let currentValue = _opts[key];
-      if(key === "blacklistFlags") {
+      if(typeof currentValue === "object") {
         let str = "";
         
         const keys = Object.keys(currentValue).filter((k) => {
