@@ -108,6 +108,10 @@ export class JokeHttpService  {
         currentValue = str;
       }
 
+      if(currentValue === "") {
+        continue;
+      }
+
       params = params.set(key, currentValue);
     }
 
