@@ -1,7 +1,15 @@
 
-<p *ngIf="joke">
-    {{joke | async | json}}
-</p>
+<div *ngIf="(joke | async) as j">
+    <ol *ngIf="isMultipleJokes(j)">
+        <li *ngFor="let _j of j.jokes">
+            {{_j | json}}
+            <br>
+        </li>
+    </ol>
+    <p *ngIf="!isMultipleJokes(j)">
+        {{j | json}}
+    </p>
+</div>
 
 
 <form [formGroup]="form" 
@@ -68,6 +76,13 @@
             <input type="text" id="contains" formControlName="contains">
         </label>
     </div>
+
+    <div class="input-container amount">
+        <label for="contains">
+            Amount: 
+            <input type="number" name="contains" min="1"  max="10"  id="contains" formControlName="amount">
+        </label>
+    </div>
     
-    <input type="submit" value="Submit" >
+    <input type="submit" value="Submit"  >
 </form>

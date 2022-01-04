@@ -1,9 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { AnyTypeJoke, Joke, MultipleJokes } from 'src/app/misc/joke.model';
+import { AnyTypeJoke, isMultipleJokes, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
-
 @Component({
   selector: 'app-joke-filter',
   templateUrl: './joke-filter.component.html',
@@ -27,6 +26,10 @@ export class JokeFilterComponent implements OnInit {
 
   get type() {
     return this.form.get('type') as FormArray;
+  }
+
+  get amount() {
+    return this.form.get("amount") as FormControl;
   }
 
 
@@ -106,7 +109,8 @@ export class JokeFilterComponent implements OnInit {
             value: true,
           }
         ].map((v) => this.fb.group(v))), 
-      contains: ""
+      contains: "",
+      amount: [1, [Validators.min(1), Validators.max(10)]]
 
     });
 
@@ -161,7 +165,10 @@ export class JokeFilterComponent implements OnInit {
   }
   
   onFormSubmit(_value: any) {
-
+    if(this.form.invalid) {
+      console.log("THE FORM IS INVALID!")
+      return;
+    }
     const value = JSON.parse(JSON.stringify(_value))
     
     const categories = value.categories.reduce((result: string[], item: any) => {
@@ -183,6 +190,10 @@ export class JokeFilterComponent implements OnInit {
 
     console.log(value)
     this.joke = this.http.getAdvanced(categories, value)
+  }
+
+  isMultipleJokes(joke: unknown) : joke is MultipleJokes {
+    return isMultipleJokes(joke)
   }
 
 }
