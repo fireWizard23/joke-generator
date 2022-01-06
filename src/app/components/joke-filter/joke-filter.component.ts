@@ -246,8 +246,12 @@ export class JokeFilterComponent implements OnInit {
       return result;
     }, {})
 
-    value.idRange = value.idRange.oneNumber ? value.idRange["min"] :`${value.idRange["min"]}-${value.idRange["max"]}`
+    value.idRange = value.idRange.oneNumber ? value.idRange["min"].toString() :`${value.idRange["min"]}-${value.idRange["max"]}`
 
+    console.log(value.idRange, typeof value.idRange)
+    if(value.idRange.toLowerCase().includes("null")) {
+      delete value.idRange;
+    }
     console.log(value)
     this.joke = this.http.getAdvanced(categories, value)
   }
