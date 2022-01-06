@@ -18,6 +18,7 @@
     <div class="categories input-container"
     formArrayName="categories"
     >
+        <h3>Categories</h3>
         <label 
         *ngFor="let c of categories.controls; let i = index;"
         for="{{c.value.name}}"
@@ -80,9 +81,9 @@
     <div class="input-container id-range" formGroupName="idRange">
         <label >
             Id Range: 
-            <input type="number" name="idRange-min" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
+            <input type="number" name="idRange-min" min="0" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
             {{idRange.value.min}}
-            <input type="number" name="idRange-max" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
+            <input type="number" name="idRange-max" min="0" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
             {{idRange.value.max}}
             <input type="checkbox" name="oneNumber" id="oneNumber" formControlName="oneNumber" (change)="onIdRangeChange($event)"> {{idRange.value.oneNumber}}
         </label>
