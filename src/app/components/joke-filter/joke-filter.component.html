@@ -77,6 +77,17 @@
         </label>
     </div>
 
+    <div class="input-container id-range" formGroupName="idRange">
+        <label >
+            Id Range: 
+            <input type="number" name="idRange-min" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
+            {{idRange.value.min}}
+            <input type="number" name="idRange-max" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
+            {{idRange.value.max}}
+            <input type="checkbox" name="oneNumber" id="oneNumber" formControlName="oneNumber" (change)="onIdRangeChange($event)"> {{idRange.value.oneNumber}}
+        </label>
+    </div>
+
     <div class="input-container amount">
         <label for="contains">
             Amount: 

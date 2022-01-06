@@ -32,6 +32,11 @@ export class JokeFilterComponent implements OnInit {
     return this.form.get("amount") as FormControl;
   }
 
+  get idRange() {
+    return this.form.get("idRange") as FormGroup;
+  }
+
+
 
   constructor(private http: JokeHttpService, private fb : FormBuilder) { }
 
@@ -97,8 +102,7 @@ export class JokeFilterComponent implements OnInit {
           value: false,
         },
       ].map((v) => this.fb.group(v))),
-      type: 
-        this.fb.array([
+      type: this.fb.array([
           {
             name: "single",
             value: true,
@@ -108,12 +112,66 @@ export class JokeFilterComponent implements OnInit {
             displayName: "Two Part",
             value: true,
           }
-        ].map((v) => this.fb.group(v))), 
+      ].map((v) => this.fb.group(v))), 
+      idRange: this.fb.group({
+        min: null,
+        max: null,
+        oneNumber: false,
+      }),
       contains: "",
-      amount: [1, [Validators.min(1), Validators.max(10)]]
+      amount: [1, [Validators.min(1), Validators.max(10)]],
 
     });
+    
 
+
+
+  }
+
+  onIdRangeChange(e: any)  {
+    const value = this.idRange.value;
+     if(value.oneNumber) {
+       if(e.target.type.toLowerCase() != "number") {
+        const keys = Object.keys(this.idRange.value)
+           .filter((v) => v != "oneNumber");
+        const highest = keys
+          .reduce((result: FormControl, item: string) => {
+            const currentItem = this.idRange.get(item) as FormControl;
+            if(result === currentItem) {
+              return result
+            }
+            if(result.value === null) {
+              return currentItem;
+            } else if(currentItem?.value === null) {
+              return result
+            }
+
+            if(result.value < currentItem?.value) {
+              return currentItem ;
+            }
+            return result;
+        }, this.idRange.get("max") as FormControl)
+        keys.forEach((k) => {
+          if(this.idRange.get(k) === highest) {
+            return;
+          }
+          this.idRange.get(k)?.setValue(highest.value)
+        })
+        return;
+       }
+
+      let key = e.target.id.replace("idRange-", "")
+      Object.keys(value).forEach((k) => {
+        if(typeof value[k] === "boolean") {
+          return;
+        }
+
+        this.idRange.get(k)?.setValue(value[key]);
+
+      })
+
+
+     }
   }
 
 
@@ -187,6 +245,8 @@ export class JokeFilterComponent implements OnInit {
       result[v.name] = v.value;
       return result;
     }, {})
+
+    value.idRange = value.idRange.oneNumber ? value.idRange["min"] :`${value.idRange["min"]}-${value.idRange["max"]}`
 
     console.log(value)
     this.joke = this.http.getAdvanced(categories, value)
