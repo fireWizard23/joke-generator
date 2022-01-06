@@ -116,7 +116,7 @@ export class JokeFilterComponent implements OnInit {
       idRange: this.fb.group({
         min: null,
         max: null,
-        oneNumber: false,
+        oneNumber: true,
       }),
       contains: "",
       amount: [1, [Validators.min(1), Validators.max(10)]],
