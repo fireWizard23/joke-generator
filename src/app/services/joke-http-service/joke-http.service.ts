@@ -137,7 +137,6 @@ export class JokeHttpService  {
     const url = this.combineUrl(env.JOKE_URL, category.reduce((result, v: any) => {
       result += v;
       if(index < category.length) {
-        console.log(index, category.length)
         result += ','
       }
       index++;
