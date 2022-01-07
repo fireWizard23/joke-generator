@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AnyTypeJoke, isMultipleJokes, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
@@ -38,90 +39,92 @@ export class JokeFilterComponent implements OnInit {
 
 
 
-  constructor(private http: JokeHttpService, private fb : FormBuilder) { }
+  constructor(private http: JokeHttpService, private fb : FormBuilder, private _ar: ActivatedRoute) { }
 
 
   ngOnInit(): void {
-    
-    this.form = this.fb.group({
-      
-      categories: this.fb.array(
-        [
+    this._ar.queryParams.subscribe((v) => {
+      console.log(v)
+      this.form = this.fb.group({
+        
+        categories: this.fb.array(
+          [
+            {
+              name: 'any',
+              value: true,
+            },
+            {
+              name: 'misc',
+              value: false,
+            },
+            {
+              name: 'dark',
+              value: false,
+            },
+            {
+              name: 'programming',
+              value: false,
+            },
+            {
+              name: 'spooky',
+              value: false,
+            },
+            {
+              name: 'christmas',
+              value: false,
+            },
+          ].map((v) => {
+            return this.fb.group({...v})
+          })
+        ),
+        language: 'english',
+        blacklistFlags: this.fb.array([
           {
-            name: 'any',
-            value: true,
-          },
-          {
-            name: 'misc',
+            name: "nsfw",
             value: false,
           },
           {
-            name: 'dark',
+            name: "religious",
             value: false,
           },
           {
-            name: 'programming',
+            name: "political",
             value: false,
           },
           {
-            name: 'spooky',
+            name: "racist",
             value: false,
           },
           {
-            name: 'christmas',
+            name: "sexist",
             value: false,
           },
-        ].map((v) => {
-          return this.fb.group({...v})
-        })
-      ),
-      language: 'english',
-      blacklistFlags: this.fb.array([
-        {
-          name: "nsfw",
-          value: false,
-        },
-        {
-          name: "religious",
-          value: false,
-        },
-        {
-          name: "political",
-          value: false,
-        },
-        {
-          name: "racist",
-          value: false,
-        },
-        {
-          name: "sexist",
-          value: false,
-        },
-        {
-          name: "explicit",
-          value: false,
-        },
-      ].map((v) => this.fb.group(v))),
-      type: this.fb.array([
           {
-            name: "single",
-            value: true,
+            name: "explicit",
+            value: false,
           },
-          {
-            name: "twopart",
-            displayName: "Two Part",
-            value: true,
-          }
-      ].map((v) => this.fb.group(v))), 
-      idRange: this.fb.group({
-        min: null,
-        max: null,
-        oneNumber: true,
-      }),
-      contains: "",
-      amount: [1, [Validators.min(1), Validators.max(10)]],
+        ].map((v) => this.fb.group(v))),
+        type: this.fb.array([
+            {
+              name: "single",
+              value: true,
+            },
+            {
+              name: "twopart",
+              displayName: "Two Part",
+              value: true,
+            }
+        ].map((v) => this.fb.group(v))), 
+        idRange: this.fb.group({
+          min: null,
+          max: null,
+          oneNumber: true,
+        }),
+        contains: "",
+        amount: [1, [Validators.min(1), Validators.max(10)]],
 
-    });
+      });
+  })
     
 
 
@@ -261,3 +264,5 @@ export class JokeFilterComponent implements OnInit {
   }
 
 }
+
+
