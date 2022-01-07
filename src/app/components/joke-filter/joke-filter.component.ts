@@ -45,33 +45,59 @@ export class JokeFilterComponent implements OnInit {
   ngOnInit(): void {
     this._ar.queryParams.subscribe((v) => {
       console.log(v)
+
+      const defaultValue = [
+        "categories",
+        "amount",
+        "idRange",
+        "blacklistFlags",
+        "type",
+        "contains",
+      ].reduce((result: any, item) => {
+        if(v[item] == null) {
+          return result;
+        }
+        result[item] = v[item]?.toLowerCase();
+        return result;
+      }, {});
+
+      console.log(defaultValue)
+
+      const commaSeperatedKeys = Object.keys(defaultValue).filter((v) => v != "contains" && v != "idRange" && v != "amount")
+
+      commaSeperatedKeys.forEach((key) => {
+        const currentItem = defaultValue[key];
+        console.log(commaToObject(currentItem))
+        defaultValue[key] = commaToObject(currentItem);
+      })
+
       this.form = this.fb.group({
         
         categories: this.fb.array(
           [
             {
               name: 'any',
-              value: true,
+              value: defaultValue.categories.any != undefined ? defaultValue.categories.any : false,
             },
             {
               name: 'misc',
-              value: false,
+              value: defaultValue.categories.misc != undefined ? defaultValue.categories.misc : false,
             },
             {
               name: 'dark',
-              value: false,
+              value: defaultValue.categories.dark != undefined ? defaultValue.categories.dark : false,
             },
             {
               name: 'programming',
-              value: false,
+              value: defaultValue.categories.programming != undefined ? defaultValue.categories.programming : false,
             },
             {
               name: 'spooky',
-              value: false,
+              value: defaultValue.categories.spooky != undefined ? defaultValue.categories.spooky : false,
             },
             {
               name: 'christmas',
-              value: false,
+              value: defaultValue.categories.christmas != undefined ? defaultValue.categories.christmas : false,
             },
           ].map((v) => {
             return this.fb.group({...v})
@@ -124,6 +150,8 @@ export class JokeFilterComponent implements OnInit {
         amount: [1, [Validators.min(1), Validators.max(10)]],
 
       });
+      console.log(this.form.value)
+      console.log(defaultValue)
   })
     
 
@@ -265,4 +293,10 @@ export class JokeFilterComponent implements OnInit {
 
 }
 
+function commaToObject(value: string, defaultValue:any=true) {
+  return value.split(",").reduce((result, item) => {
+    result[item] = defaultValue;
+    return result;
+  }, {} as any);
+}
 
