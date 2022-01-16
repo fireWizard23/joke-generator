@@ -77,27 +77,27 @@ export class JokeFilterComponent implements OnInit {
           [
             {
               name: 'any',
-              value: defaultValue.categories.any != undefined ? defaultValue.categories.any : false,
+              value: isCategoriesPropertyUndefined("any") ? defaultValue.categories.any : false,
             },
             {
               name: 'misc',
-              value: defaultValue.categories.misc != undefined ? defaultValue.categories.misc : false,
+              value: defaultValue.categories?.misc != undefined ? defaultValue.categories.misc : false,
             },
             {
               name: 'dark',
-              value: defaultValue.categories.dark != undefined ? defaultValue.categories.dark : false,
+              value: defaultValue.categories?.dark != undefined ? defaultValue.categories.dark : false,
             },
             {
               name: 'programming',
-              value: defaultValue.categories.programming != undefined ? defaultValue.categories.programming : false,
+              value: defaultValue.categories?.programming != undefined ? defaultValue.categories.programming : false,
             },
             {
               name: 'spooky',
-              value: defaultValue.categories.spooky != undefined ? defaultValue.categories.spooky : false,
+              value: defaultValue.categories?.spooky != undefined ? defaultValue.categories.spooky : false,
             },
             {
               name: 'christmas',
-              value: defaultValue.categories.christmas != undefined ? defaultValue.categories.christmas : false,
+              value: defaultValue.categories?.christmas != undefined ? defaultValue.categories.christmas : false,
             },
           ].map((v) => {
             return this.fb.group({...v})
@@ -152,6 +152,13 @@ export class JokeFilterComponent implements OnInit {
       });
       console.log(this.form.value)
       console.log(defaultValue)
+
+      function isCategoriesPropertyUndefined(s: string){
+        return defaultValue.categories?.[s] !== undefined;
+      }
+
+      this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
+
   })
     
 
@@ -206,32 +213,19 @@ export class JokeFilterComponent implements OnInit {
   }
 
 
-  onCategoriesChange(e: any) {
+  onCategoriesChange(newValue: any[]) {
 
-    const value = this.categories.value.reduce((result: any, v: any) => {
-      result[v.name] = v.value;
-      return result;
-    }, {});
+    const anyCategory = newValue.find((v) => v.name=== "any");
 
-    if(e.target.id != 'any') {
-      if(value.any === true) {
-        this.categories.controls.forEach((v) => {
-          v.patchValue({
-            value: v.value.name == 'any' ? false : v.value.value,
-          })
-        })
-      }
-      return;
+    if(anyCategory.value === true) {
+      newValue.filter((v) => v.name != "any").forEach((v) => {
+        v.value = false});
+      console.log(newValue)
+      this.categories.setValue(newValue, {
+        emitEvent: false
+      });
     }
-      
-      if(value.any === true) {
-        this.categories.controls.forEach((v) => {
-          v.patchValue({
-            value: v.value.name != 'any' ? false : true,
-          })
-        })
-      }
-    }
+  }
 
   onTypeChange(e: any) {
     const noneIsChecked = (this.type.value as any[]).every((v) => v.value === false)    
