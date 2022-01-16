@@ -71,33 +71,35 @@ export class JokeFilterComponent implements OnInit {
         defaultValue[key] = commaToObject(currentItem);
       })
 
+      console.log("DEFATLIUDSK", defaultValue)
+
       this.form = this.fb.group({
         
         categories: this.fb.array(
           [
             {
               name: 'any',
-              value: isCategoriesPropertyUndefined("any") ? defaultValue.categories.any : false,
+              value: doesCategoriesPropertyExists("any") ? defaultValue.categories.any : true,
             },
             {
               name: 'misc',
-              value: defaultValue.categories?.misc != undefined ? defaultValue.categories.misc : false,
+              value: doesCategoriesPropertyExists("misc") ? defaultValue.categories.misc : false,
             },
             {
               name: 'dark',
-              value: defaultValue.categories?.dark != undefined ? defaultValue.categories.dark : false,
+              value: doesCategoriesPropertyExists("dark") ? defaultValue.categories.dark : false,
             },
             {
               name: 'programming',
-              value: defaultValue.categories?.programming != undefined ? defaultValue.categories.programming : false,
+              value: doesCategoriesPropertyExists("programming") ? defaultValue.categories.programming : false,
             },
             {
               name: 'spooky',
-              value: defaultValue.categories?.spooky != undefined ? defaultValue.categories.spooky : false,
+              value: doesCategoriesPropertyExists("spooky") ? defaultValue.categories.spooky : false,
             },
             {
               name: 'christmas',
-              value: defaultValue.categories?.christmas != undefined ? defaultValue.categories.christmas : false,
+              value: doesCategoriesPropertyExists("christmas") ? defaultValue.categories.christmas : false,
             },
           ].map((v) => {
             return this.fb.group({...v})
@@ -107,27 +109,27 @@ export class JokeFilterComponent implements OnInit {
         blacklistFlags: this.fb.array([
           {
             name: "nsfw",
-            value: false,
+            value: doesFlagsPropertyExists("nsfw") ? defaultValue.blacklistFlags.nsfw : false,
           },
           {
             name: "religious",
-            value: false,
+            value: doesFlagsPropertyExists("religious") ? defaultValue.blacklistFlags.religious : false,
           },
           {
             name: "political",
-            value: false,
+            value: doesFlagsPropertyExists("political") ? defaultValue.blacklistFlags.political : false,
           },
           {
             name: "racist",
-            value: false,
+            value: doesFlagsPropertyExists("racist") ? defaultValue.blacklistFlags.racist : false,
           },
           {
             name: "sexist",
-            value: false,
+            value: doesFlagsPropertyExists("sexist") ? defaultValue.blacklistFlags.sexist : false,
           },
           {
             name: "explicit",
-            value: false,
+            value: doesFlagsPropertyExists("explicit") ? defaultValue.blacklistFlags.explicit : false,
           },
         ].map((v) => this.fb.group(v))),
         type: this.fb.array([
@@ -150,11 +152,14 @@ export class JokeFilterComponent implements OnInit {
         amount: [1, [Validators.min(1), Validators.max(10)]],
 
       });
-      console.log(this.form.value)
       console.log(defaultValue)
 
-      function isCategoriesPropertyUndefined(s: string){
+      function doesCategoriesPropertyExists(s: string){
         return defaultValue.categories?.[s] !== undefined;
+      }
+
+      function doesFlagsPropertyExists(s: string){
+        return defaultValue.blacklistFlags?.[s] !== undefined;
       }
 
       this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
@@ -220,7 +225,6 @@ export class JokeFilterComponent implements OnInit {
     if(anyCategory.value === true) {
       newValue.filter((v) => v.name != "any").forEach((v) => {
         v.value = false});
-      console.log(newValue)
       this.categories.setValue(newValue, {
         emitEvent: false
       });
