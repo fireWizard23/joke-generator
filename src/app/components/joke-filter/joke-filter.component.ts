@@ -17,6 +17,7 @@ export class JokeFilterComponent implements OnInit {
 
   oneTypeIsChecked = false;
 
+ //#region Form Properties
   get categories() {
     return this.form.get('categories') as FormArray;
   }
@@ -36,8 +37,7 @@ export class JokeFilterComponent implements OnInit {
   get idRange() {
     return this.form.get("idRange") as FormGroup;
   }
-
-
+ //#endregion
 
   constructor(private http: JokeHttpService, private fb : FormBuilder, private _ar: ActivatedRoute) { }
 
