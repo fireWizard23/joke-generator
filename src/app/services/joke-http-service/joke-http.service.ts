@@ -8,6 +8,20 @@ import { Map } from 'immutable';
 import { ActivatedRoute } from '@angular/router';
 
 
+type JokeUrlOptions = {
+  headers?: HttpHeaders | {
+    [header: string]: string | string[];
+  };
+  context?: HttpContext;
+  observe?: 'body';
+  params?: HttpParams | {
+    [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+  };
+  reportProgress?: boolean;
+  responseType?: 'json';
+  withCredentials?: boolean;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -104,28 +118,10 @@ export class JokeHttpService  {
   }
 
   private get<T extends AnyTypeJoke>(category: JokeCategory[], opt: 
-    {
-      headers?: HttpHeaders | {
-          [header: string]: string | string[];
-      };
-      context?: HttpContext;
-      observe?: 'body';
-      params?: HttpParams | {
-          [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
-      };
-      reportProgress?: boolean;
-      responseType?: 'json';
-      withCredentials?: boolean; }
+    JokeUrlOptions
     ): Observable<T> {
     let index = 1;
-    const url = this.combineUrl(env.JOKE_URL, category.reduce((result, v: any) => {
-      result += v;
-      if(index < category.length) {
-        result += ','
-      }
-      index++;
-      return result;
-    }, ""))
+    const url = this.combineUrl(env.JOKE_URL, category.toString())
     
     return this.http.get<T>(url, opt)
       .pipe(
