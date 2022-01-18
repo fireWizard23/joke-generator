@@ -76,37 +76,24 @@ export class JokeFilterComponent implements OnInit {
       this.form = this.fb.group({
         
         categories: this.fb.array(
-          [
-            {
-              name: 'any',
-              value: doesCategoriesPropertyExists("any") ? defaultValue.categories.any : true,
-            },
-            {
-              name: 'misc',
-              value: doesCategoriesPropertyExists("misc") ? defaultValue.categories.misc : false,
-            },
-            {
-              name: 'dark',
-              value: doesCategoriesPropertyExists("dark") ? defaultValue.categories.dark : false,
-            },
-            {
-              name: 'programming',
-              value: doesCategoriesPropertyExists("programming") ? defaultValue.categories.programming : false,
-            },
-            {
-              name: 'spooky',
-              value: doesCategoriesPropertyExists("spooky") ? defaultValue.categories.spooky : false,
-            },
-            {
-              name: 'christmas',
-              value: doesCategoriesPropertyExists("christmas") ? defaultValue.categories.christmas : false,
-            },
-          ].map((v) => {
-            return this.fb.group({...v})
-          })
+          createCategoriesArray.bind(this)()
         ),
         language: 'english',
-        blacklistFlags: this.fb.array([
+        blacklistFlags: this.fb.array(createBlacklistFlagsArray.bind(this)()),
+        type: this.fb.array(createTypesArray.bind(this)()), 
+        idRange: this.fb.group({
+          min: null,
+          max: null,
+          oneNumber: true,
+        }),
+        contains: "",
+        amount: [1, [Validators.min(1), Validators.max(10)]],
+
+      });
+      
+
+      function createBlacklistFlagsArray(this: JokeFilterComponent): any[] {
+        return [
           {
             name: "nsfw",
             value: doesFlagsPropertyExists("nsfw") ? defaultValue.blacklistFlags.nsfw : false,
@@ -131,20 +118,41 @@ export class JokeFilterComponent implements OnInit {
             name: "explicit",
             value: doesFlagsPropertyExists("explicit") ? defaultValue.blacklistFlags.explicit : false,
           },
-        ].map((v) => this.fb.group(v))),
-        type: this.fb.array(getTypesArray.bind(this)()), 
-        idRange: this.fb.group({
-          min: null,
-          max: null,
-          oneNumber: true,
-        }),
-        contains: "",
-        amount: [1, [Validators.min(1), Validators.max(10)]],
+        ].map((v) => this.fb.group(v));
+      }
 
-      });
-      
+      function createCategoriesArray(this: JokeFilterComponent): any[] {
+        return [
+          {
+            name: 'any',
+            value: doesCategoriesPropertyExists("any") ? defaultValue.categories.any : true,
+          },
+          {
+            name: 'misc',
+            value: doesCategoriesPropertyExists("misc") ? defaultValue.categories.misc : false,
+          },
+          {
+            name: 'dark',
+            value: doesCategoriesPropertyExists("dark") ? defaultValue.categories.dark : false,
+          },
+          {
+            name: 'programming',
+            value: doesCategoriesPropertyExists("programming") ? defaultValue.categories.programming : false,
+          },
+          {
+            name: 'spooky',
+            value: doesCategoriesPropertyExists("spooky") ? defaultValue.categories.spooky : false,
+          },
+          {
+            name: 'christmas',
+            value: doesCategoriesPropertyExists("christmas") ? defaultValue.categories.christmas : false,
+          },
+        ].map((v) => {
+          return this.fb.group({ ...v });
+        });
+      }
 
-      function getTypesArray(this: JokeFilterComponent): any[] {
+      function createTypesArray(this: JokeFilterComponent): any[] {
         
         let singleValue = doesTypePropertyExists("single") ? defaultValue.type.single : (
           doesTypePropertyExists("twopart") ? false :  true
