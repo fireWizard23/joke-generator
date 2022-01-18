@@ -46,14 +46,16 @@ export class JokeFilterComponent implements OnInit {
     this._ar.queryParams.subscribe((v) => {
       
 
-      const defaultValue = [
+      const keysToCheck = [
         "categories",
         "amount",
         "idRange",
         "blacklistFlags",
         "type",
         "contains",
-      ].reduce((result: any, item) => {
+      ];
+
+      const formValuesFromUrl = keysToCheck.reduce((result: any, item) => {
         if(v[item] == null || v[item] === "") {
           return result;
         }
@@ -61,14 +63,16 @@ export class JokeFilterComponent implements OnInit {
         return result;
       }, {});
 
-      const commaSeperatedKeys = Object.keys(defaultValue).filter((v) => v != "contains" && v != "idRange" && v != "amount")
+      const keysOfFormValues = Object.keys(formValuesFromUrl);
+      const commaSeperatedKeys = keysOfFormValues.filter((v) => v != "contains" && v != "idRange" && v != "amount")
 
       commaSeperatedKeys.forEach((key) => {
-        const currentItem = defaultValue[key];
+        const currentItem = formValuesFromUrl[key];
         
-        defaultValue[key] = commaToObject(currentItem);
+        formValuesFromUrl[key] = commaToObject(currentItem);
       })
 
+      
       
 
       this.form = this.fb.group({
@@ -84,8 +88,8 @@ export class JokeFilterComponent implements OnInit {
           max: null,
           oneNumber: true,
         }),
-        contains: defaultValue?.contains || "",
-        amount: [defaultValue?.amount || 1, [Validators.min(1), Validators.max(10)]],
+        contains: formValuesFromUrl?.contains || "",
+        amount: [formValuesFromUrl?.amount || 1, [Validators.min(1), Validators.max(10)]],
 
       });
       
@@ -94,27 +98,27 @@ export class JokeFilterComponent implements OnInit {
         return [
           {
             name: "nsfw",
-            value: doesFlagsPropertyExists("nsfw") ? defaultValue.blacklistFlags.nsfw : false,
+            value: doesFlagsPropertyExists("nsfw") ? formValuesFromUrl.blacklistFlags.nsfw : false,
           },
           {
             name: "religious",
-            value: doesFlagsPropertyExists("religious") ? defaultValue.blacklistFlags.religious : false,
+            value: doesFlagsPropertyExists("religious") ? formValuesFromUrl.blacklistFlags.religious : false,
           },
           {
             name: "political",
-            value: doesFlagsPropertyExists("political") ? defaultValue.blacklistFlags.political : false,
+            value: doesFlagsPropertyExists("political") ? formValuesFromUrl.blacklistFlags.political : false,
           },
           {
             name: "racist",
-            value: doesFlagsPropertyExists("racist") ? defaultValue.blacklistFlags.racist : false,
+            value: doesFlagsPropertyExists("racist") ? formValuesFromUrl.blacklistFlags.racist : false,
           },
           {
             name: "sexist",
-            value: doesFlagsPropertyExists("sexist") ? defaultValue.blacklistFlags.sexist : false,
+            value: doesFlagsPropertyExists("sexist") ? formValuesFromUrl.blacklistFlags.sexist : false,
           },
           {
             name: "explicit",
-            value: doesFlagsPropertyExists("explicit") ? defaultValue.blacklistFlags.explicit : false,
+            value: doesFlagsPropertyExists("explicit") ? formValuesFromUrl.blacklistFlags.explicit : false,
           },
         ].map((v) => this.fb.group(v));
       }
@@ -123,27 +127,27 @@ export class JokeFilterComponent implements OnInit {
         return [
           {
             name: 'any',
-            value: doesCategoriesPropertyExists("any") ? defaultValue.categories.any : true,
+            value: doesCategoriesPropertyExists("any") ? formValuesFromUrl.categories.any : true,
           },
           {
             name: 'misc',
-            value: doesCategoriesPropertyExists("misc") ? defaultValue.categories.misc : false,
+            value: doesCategoriesPropertyExists("misc") ? formValuesFromUrl.categories.misc : false,
           },
           {
             name: 'dark',
-            value: doesCategoriesPropertyExists("dark") ? defaultValue.categories.dark : false,
+            value: doesCategoriesPropertyExists("dark") ? formValuesFromUrl.categories.dark : false,
           },
           {
             name: 'programming',
-            value: doesCategoriesPropertyExists("programming") ? defaultValue.categories.programming : false,
+            value: doesCategoriesPropertyExists("programming") ? formValuesFromUrl.categories.programming : false,
           },
           {
             name: 'spooky',
-            value: doesCategoriesPropertyExists("spooky") ? defaultValue.categories.spooky : false,
+            value: doesCategoriesPropertyExists("spooky") ? formValuesFromUrl.categories.spooky : false,
           },
           {
             name: 'christmas',
-            value: doesCategoriesPropertyExists("christmas") ? defaultValue.categories.christmas : false,
+            value: doesCategoriesPropertyExists("christmas") ? formValuesFromUrl.categories.christmas : false,
           },
         ].map((v) => {
           return this.fb.group({ ...v });
@@ -152,10 +156,10 @@ export class JokeFilterComponent implements OnInit {
 
       function createTypesArray(this: JokeFilterComponent): any[] {
         
-        let singleValue = doesTypePropertyExists("single") ? defaultValue.type.single : (
+        let singleValue = doesTypePropertyExists("single") ? formValuesFromUrl.type.single : (
           doesTypePropertyExists("twopart") ? false :  true
         );
-        let twoPartValue = doesTypePropertyExists("twopart") ? defaultValue.type.twopart : (
+        let twoPartValue = doesTypePropertyExists("twopart") ? formValuesFromUrl.type.twopart : (
           doesTypePropertyExists("single") ? false :  true
         );
 
@@ -176,21 +180,21 @@ export class JokeFilterComponent implements OnInit {
       //#endregion
 
       function doesTypePropertyExists(s: string){
-        return defaultValue.type?.[s] !== undefined;
+        return formValuesFromUrl.type?.[s] !== undefined;
       }
 
       function doesCategoriesPropertyExists(s: string){
-        return defaultValue.categories?.[s] !== undefined;
+        return formValuesFromUrl.categories?.[s] !== undefined;
       }
 
       function doesFlagsPropertyExists(s: string){
-        return defaultValue.blacklistFlags?.[s] !== undefined;
+        return formValuesFromUrl.blacklistFlags?.[s] !== undefined;
       }
 
       this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
 
-      if(Object.keys(defaultValue).length > 0) {
-        this.requestJoke(defaultValue)
+      if(keysOfFormValues.length > 0) {
+        this.requestJoke(formValuesFromUrl)
       }
 
 
