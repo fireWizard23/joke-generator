@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {  Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { mergeMap, Observable, pairwise, withLatestFrom } from 'rxjs';
-import { AnyTypeJoke, isMultipleJokes, Joke, MultipleJokes } from 'src/app/misc/joke.model';
-import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
-import {difference, differenceWith, isEqual, merge} from 'lodash'
+import {  Observable, pairwise,  } from 'rxjs';
+import { AnyTypeJoke, isMultipleJokes, MultipleJokes } from 'src/app/misc/joke.model';
+import { JokeHttpService } from 'src/app/services/joke-http-service/joke-http.service';
+import { differenceWith, isEqual, } from 'lodash'
 @Component({
   selector: 'app-joke-filter',
   templateUrl: './joke-filter.component.html',
