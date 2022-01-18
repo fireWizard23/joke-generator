@@ -91,9 +91,9 @@ export class JokeFilterComponent implements OnInit {
         blacklistFlags: this.fb.array(createBlacklistFlagsArray.bind(this)()),
         type: this.fb.array(createTypesArray.bind(this)()), 
         idRange: this.fb.group({
-          min: formValuesFromUrl.idRange.min || null,
-          max: formValuesFromUrl.idRange.max || null,
-          oneNumber: formValuesFromUrl.idRange.oneNumber != undefined ? formValuesFromUrl.idRange.oneNumber : true,
+          min: formValuesFromUrl.idRange?.min || null,
+          max: formValuesFromUrl.idRange?.max || null,
+          oneNumber: formValuesFromUrl.idRange?.oneNumber != undefined ? formValuesFromUrl.idRange.oneNumber : true,
         }),
         contains: formValuesFromUrl?.contains || "",
         amount: [formValuesFromUrl?.amount || 1, [Validators.min(1), Validators.max(10)]],
