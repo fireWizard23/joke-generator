@@ -44,9 +44,10 @@ export class JokeFilterComponent implements OnInit {
 
 
   ngOnInit(): void {
+    
     this._ar.queryParams.subscribe((v) => {
       
-
+      
       const keysToCheck = [
         "categories",
         "amount",
@@ -222,9 +223,9 @@ export class JokeFilterComponent implements OnInit {
 
     delete v.categories;
 
-    console.log(v, categories)
-
     
+
+
     this.joke = this.http.getAdvanced(categories, v);
   }
 
@@ -360,7 +361,6 @@ export class JokeFilterComponent implements OnInit {
     }
 
     const valueToSubmit = {categories, ...value}
-    console.log(valueToSubmit)
     this._router.navigate([], {
       relativeTo: this._ar,
       queryParams: valueToSubmit,
