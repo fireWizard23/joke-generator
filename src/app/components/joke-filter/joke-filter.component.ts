@@ -132,17 +132,7 @@ export class JokeFilterComponent implements OnInit {
             value: doesFlagsPropertyExists("explicit") ? defaultValue.blacklistFlags.explicit : false,
           },
         ].map((v) => this.fb.group(v))),
-        type: this.fb.array([
-            {
-              name: "single",
-              value: true,
-            },
-            {
-              name: "twopart",
-              displayName: "Two Part",
-              value: true,
-            }
-        ].map((v) => this.fb.group(v))), 
+        type: this.fb.array(getTypesArray.bind(this)()), 
         idRange: this.fb.group({
           min: null,
           max: null,
@@ -153,6 +143,34 @@ export class JokeFilterComponent implements OnInit {
 
       });
       console.log(defaultValue)
+
+      function getTypesArray(this: JokeFilterComponent): any[] {
+        console.log("SINGLE",doesTypePropertyExists("single"), defaultValue.type.twopart)
+        let singleValue = doesTypePropertyExists("single") ? defaultValue.type.single : (
+          doesTypePropertyExists("twopart") ? false :  true
+        );
+        let twoPartValue = doesTypePropertyExists("twopart") ? defaultValue.type.twopart : (
+          doesTypePropertyExists("single") ? false :  true
+        );
+
+      
+
+        return [
+          {
+            name: "single",
+            value: singleValue,
+          },
+          {
+            name: "twopart",
+            displayName: "Two Part",
+            value: twoPartValue ,
+          }
+        ].map((v) => this.fb.group(v));
+      }
+
+      function doesTypePropertyExists(s: string){
+        return defaultValue.type?.[s] !== undefined;
+      }
 
       function doesCategoriesPropertyExists(s: string){
         return defaultValue.categories?.[s] !== undefined;
