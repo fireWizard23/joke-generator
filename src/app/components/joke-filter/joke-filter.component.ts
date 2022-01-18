@@ -54,14 +54,12 @@ export class JokeFilterComponent implements OnInit {
         "type",
         "contains",
       ].reduce((result: any, item) => {
-        if(v[item] == null) {
+        if(v[item] == null || v[item] === "") {
           return result;
         }
         result[item] = v[item]?.toLowerCase();
         return result;
       }, {});
-
-      
 
       const commaSeperatedKeys = Object.keys(defaultValue).filter((v) => v != "contains" && v != "idRange" && v != "amount")
 
@@ -86,8 +84,8 @@ export class JokeFilterComponent implements OnInit {
           max: null,
           oneNumber: true,
         }),
-        contains: "",
-        amount: [1, [Validators.min(1), Validators.max(10)]],
+        contains: defaultValue?.contains || "",
+        amount: [defaultValue?.amount || 1, [Validators.min(1), Validators.max(10)]],
 
       });
       
@@ -190,6 +188,9 @@ export class JokeFilterComponent implements OnInit {
       }
 
       this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
+
+      
+
 
   })
     
