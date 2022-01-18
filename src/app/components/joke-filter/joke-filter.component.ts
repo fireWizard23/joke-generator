@@ -91,7 +91,7 @@ export class JokeFilterComponent implements OnInit {
 
       });
       
-
+      //#region Creation Of Arrays
       function createBlacklistFlagsArray(this: JokeFilterComponent): any[] {
         return [
           {
@@ -175,6 +175,7 @@ export class JokeFilterComponent implements OnInit {
           }
         ].map((v) => this.fb.group(v));
       }
+      //#endregion
 
       function doesTypePropertyExists(s: string){
         return defaultValue.type?.[s] !== undefined;
