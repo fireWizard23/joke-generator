@@ -89,8 +89,6 @@ export class JokeHttpService  {
     for(const key in _opts) {
       let currentValue = _opts[key];
       if(typeof currentValue === "object") {
-        let str = "";
-        
         const keys = Object.keys(currentValue).filter((k) => {
           return currentValue[k] === true;
         });
@@ -99,13 +97,7 @@ export class JokeHttpService  {
           continue;
         }
         
-        keys.forEach((v, index) => {
-          str += v;
-          if(index < keys.length - 1) {
-            str += ','
-          }
-        })
-        currentValue = str;
+        currentValue = keys.toString();
       }
 
       if(currentValue === "") {
