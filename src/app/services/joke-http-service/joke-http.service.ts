@@ -93,13 +93,21 @@ export class JokeHttpService  {
     }
 
     return this.getAdvanced<T>(['any'], {
-      idRange: id
+      idRange: id.toString()
     })
   }
 
   public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory[], opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
+    if(typeof opts.idRange != "string") {
+      if(opts.idRange?.oneNumber) {
+        opts.idRange = opts.idRange.min.toString();
+      } else {
+        opts.idRange = `${opts.idRange?.min}-${opts.idRange?.max}`
+      }
+    }
+
     for(const key in _opts) {
       let currentValue = _opts[key];
       if(typeof currentValue === "object") {
@@ -153,7 +161,7 @@ export interface JokeUrlParams {
   type?: JokeType;
   blackListFlags?: JokeFlags;
   lang?: JokeLang;
-  idRange?: number;
+  idRange?: string | { min: number, max: number, oneNumber: boolean};
   contains?: string;
   amount?:number;
   isSafe?: boolean;
