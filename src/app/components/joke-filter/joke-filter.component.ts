@@ -210,6 +210,8 @@ export class JokeFilterComponent implements OnInit {
     this.joke = this.http.getAdvanced(categories, v);
   }
 
+  //#region  OnChange Methods
+
   onIdRangeChange(e: any)  {
     const value = this.idRange.value;
      if(value.oneNumber) {
@@ -289,6 +291,10 @@ export class JokeFilterComponent implements OnInit {
 
 
   }
+
+  //#endregion
+
+
   
   onFormSubmit(_value: any) {
     if(this.form.invalid) {
