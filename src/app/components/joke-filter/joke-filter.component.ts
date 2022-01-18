@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { mergeMap, Observable, pairwise, withLatestFrom } from 'rxjs';
 import { AnyTypeJoke, isMultipleJokes, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
+import {difference, differenceWith, isEqual, merge} from 'lodash'
 @Component({
   selector: 'app-joke-filter',
   templateUrl: './joke-filter.component.html',
@@ -198,13 +199,11 @@ export class JokeFilterComponent implements OnInit {
         return formValuesFromUrl.blacklistFlags?.[s] !== undefined;
       }
 
-      function doesIdRangePropertyExists(s: string){
-        return formValuesFromUrl.idRange?.[s] !== undefined;
-      }
+      this.categories.valueChanges.pipe(
+        pairwise()
+      ).subscribe(this.onCategoriesChange.bind(this))
 
-      
-
-      this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
+      this.categories.patchValue([]) // So there would be two of emitted values!
 
       if(keysOfFormValues.length > 0) {
         this.requestJoke(formValuesFromUrl)
@@ -224,6 +223,8 @@ export class JokeFilterComponent implements OnInit {
     delete v.categories;
 
     console.log(v, categories)
+
+    
     this.joke = this.http.getAdvanced(categories, v);
   }
 
@@ -276,17 +277,33 @@ export class JokeFilterComponent implements OnInit {
   }
 
 
-  onCategoriesChange(newValue: any[]) {
-
+  onCategoriesChange(_values: any[][]) {
+    const [oldValue, newValue] = _values;
     const anyCategory = newValue.find((v) => v.name=== "any");
+    const changedProperty = differenceWith(newValue, oldValue, isEqual)[0];
+    if(newValue.every((v) => v.value === false)) {
+      changedProperty.value = !changedProperty.value;
+      this.categories.patchValue(newValue)
+      return; 
+    }
+
 
     if(anyCategory.value === true) {
-      newValue.filter((v) => v.name != "any").forEach((v) => {
-        v.value = false});
+      if(changedProperty?.name != "any" && changedProperty?.value === true) {
+        anyCategory.value = false;
+      }  else  {
+        newValue.filter((v) => v.name != "any").forEach((v) => {
+          v.value = false});
+      }
+
       this.categories.setValue(newValue, {
         emitEvent: false
       });
     }
+
+
+
+
   }
 
   onTypeChange(e: any) {
@@ -316,6 +333,7 @@ export class JokeFilterComponent implements OnInit {
       
       return;
     }
+    
     const value = JSON.parse(JSON.stringify(_value))
 
     const categories = value.categories.reduce((result: string[], item: any) => {
@@ -342,7 +360,7 @@ export class JokeFilterComponent implements OnInit {
     }
 
     const valueToSubmit = {categories, ...value}
-
+    console.log(valueToSubmit)
     this._router.navigate([], {
       relativeTo: this._ar,
       queryParams: valueToSubmit,
