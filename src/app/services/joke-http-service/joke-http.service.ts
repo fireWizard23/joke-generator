@@ -89,21 +89,13 @@ export class JokeHttpService  {
     for(const key in _opts) {
       let currentValue = _opts[key];
       if(typeof currentValue === "object") {
-        const keys = Object.keys(currentValue).filter((k) => {
-          return currentValue[k] === true;
-        });
+        const keys = Object.keys(currentValue).filter((k) => currentValue[k] === true);
 
         if(keys.length == 0) {
           continue;
         }
-        
         currentValue = keys.toString();
       }
-
-      if(currentValue === "") {
-        continue;
-      }
-
       params = params.set(key, currentValue);
     }
 
