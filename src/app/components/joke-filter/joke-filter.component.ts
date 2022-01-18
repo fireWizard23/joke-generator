@@ -15,7 +15,7 @@ export class JokeFilterComponent implements OnInit {
 
   joke!: Observable<AnyTypeJoke | MultipleJokes>;
 
-  oneTypeIsChecked = false;
+  oneTypeInputIsChecked = false;
 
  //#region Form Properties
   get categories() {
@@ -281,12 +281,12 @@ export class JokeFilterComponent implements OnInit {
         v.patchValue({
           value: true
         })
-        this.oneTypeIsChecked = noneIsChecked;
+        this.oneTypeInputIsChecked = noneIsChecked;
       }
     })
 
     if(!noneIsChecked) {
-      this.oneTypeIsChecked = false;
+      this.oneTypeInputIsChecked = false;
     }
 
 
@@ -294,15 +294,13 @@ export class JokeFilterComponent implements OnInit {
 
   //#endregion
 
-
-  
   onFormSubmit(_value: any) {
     if(this.form.invalid) {
       
       return;
     }
     const value = JSON.parse(JSON.stringify(_value))
-    
+
     const categories = value.categories.reduce((result: string[], item: any) => {
       item.value === true && result.push(item.name)
       return result;
