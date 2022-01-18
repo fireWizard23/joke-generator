@@ -72,8 +72,15 @@ export class JokeFilterComponent implements OnInit {
         formValuesFromUrl[key] = commaToObject(currentItem);
       })
 
-      
-      
+      if(formValuesFromUrl.idRange) {
+        const [min, max] = (formValuesFromUrl?.idRange as string)?.split("-");
+        formValuesFromUrl.idRange = {
+          min,
+          max,
+          oneNumber: min == max
+        }        
+      }
+
 
       this.form = this.fb.group({
         
@@ -84,9 +91,9 @@ export class JokeFilterComponent implements OnInit {
         blacklistFlags: this.fb.array(createBlacklistFlagsArray.bind(this)()),
         type: this.fb.array(createTypesArray.bind(this)()), 
         idRange: this.fb.group({
-          min: null,
-          max: null,
-          oneNumber: true,
+          min: formValuesFromUrl.idRange.min || null,
+          max: formValuesFromUrl.idRange.max || null,
+          oneNumber: formValuesFromUrl.idRange.oneNumber != undefined ? formValuesFromUrl.idRange.oneNumber : true,
         }),
         contains: formValuesFromUrl?.contains || "",
         amount: [formValuesFromUrl?.amount || 1, [Validators.min(1), Validators.max(10)]],
@@ -190,6 +197,12 @@ export class JokeFilterComponent implements OnInit {
       function doesFlagsPropertyExists(s: string){
         return formValuesFromUrl.blacklistFlags?.[s] !== undefined;
       }
+
+      function doesIdRangePropertyExists(s: string){
+        return formValuesFromUrl.idRange?.[s] !== undefined;
+      }
+
+      
 
       this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
 
