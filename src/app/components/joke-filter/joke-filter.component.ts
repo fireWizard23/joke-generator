@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AnyTypeJoke, isMultipleJokes, Joke, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService, JokeUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
@@ -39,7 +39,7 @@ export class JokeFilterComponent implements OnInit {
   }
  //#endregion
 
-  constructor(private http: JokeHttpService, private fb : FormBuilder, private _ar: ActivatedRoute) { }
+  constructor(private http: JokeHttpService, private fb : FormBuilder, private _ar: ActivatedRoute, private _router: Router) { }
 
 
   ngOnInit(): void {
@@ -190,15 +190,24 @@ export class JokeFilterComponent implements OnInit {
       this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
 
       if(Object.keys(defaultValue).length > 0) {
-        this.onFormSubmit(this.form.value);
+        this.requestJoke(defaultValue)
       }
 
 
   })
     
+  }
 
+  requestJoke(v: {[key: string]: any}) {  
+    const categories = Object.keys(v.categories).reduce((result: any[], key) => {
+      result.push(key)
+      return result;
+    }, [] );
 
+    delete v.categories;
 
+    console.log(v, categories)
+    this.joke = this.http.getAdvanced(categories, v);
   }
 
   onIdRangeChange(e: any)  {
@@ -291,19 +300,18 @@ export class JokeFilterComponent implements OnInit {
     const categories = value.categories.reduce((result: string[], item: any) => {
       item.value === true && result.push(item.name)
       return result;
-    }, [])
+    }, []).toString()
 
     delete value.categories;
-
-    value.blacklistFlags = value.blacklistFlags.reduce((result: any, v: any) => {
-      result[v.name ] = v.value;
+    value.blacklistFlags = value.blacklistFlags.reduce((result: any[], v: any) => {
+      v.value && result.push(v.name)
       return result;
-    }, {})
+    }, []).toString()
 
-    value.type = value.type.reduce((result: any, v: any) => {
-      result[v.name] = v.value;
+    value.type = value.type.reduce((result: any[], v: any) => {
+      v.value && result.push(v.name)
       return result;
-    }, {})
+    }, []).toString()
 
     value.idRange = value.idRange.oneNumber ? (value.idRange["min"] || value.idRange["max"] || "null")?.toString() :`${value.idRange["min"]}-${value.idRange["max"]}`
 
@@ -311,7 +319,15 @@ export class JokeFilterComponent implements OnInit {
     if(value.idRange.toLowerCase().includes("null")) {
       delete value.idRange;
     }
-    this.joke = this.http.getAdvanced(categories, value)
+
+    const valueToSubmit = {categories, ...value}
+
+    this._router.navigate([], {
+      relativeTo: this._ar,
+      queryParams: valueToSubmit,
+      queryParamsHandling: "merge"
+    })    
+
   }
 
   isMultipleJokes(joke: unknown) : joke is MultipleJokes {
