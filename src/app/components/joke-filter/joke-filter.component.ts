@@ -189,7 +189,9 @@ export class JokeFilterComponent implements OnInit {
 
       this.categories.valueChanges.subscribe(this.onCategoriesChange.bind(this))
 
-      
+      if(Object.keys(defaultValue).length > 0) {
+        this.onFormSubmit(this.form.value);
+      }
 
 
   })
