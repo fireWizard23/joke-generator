@@ -44,7 +44,7 @@ export class JokeFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this._ar.queryParams.subscribe((v) => {
-      console.log(v)
+      
 
       const defaultValue = [
         "categories",
@@ -61,17 +61,17 @@ export class JokeFilterComponent implements OnInit {
         return result;
       }, {});
 
-      console.log(defaultValue)
+      
 
       const commaSeperatedKeys = Object.keys(defaultValue).filter((v) => v != "contains" && v != "idRange" && v != "amount")
 
       commaSeperatedKeys.forEach((key) => {
         const currentItem = defaultValue[key];
-        console.log(commaToObject(currentItem))
+        
         defaultValue[key] = commaToObject(currentItem);
       })
 
-      console.log("DEFATLIUDSK", defaultValue)
+      
 
       this.form = this.fb.group({
         
@@ -142,10 +142,10 @@ export class JokeFilterComponent implements OnInit {
         amount: [1, [Validators.min(1), Validators.max(10)]],
 
       });
-      console.log(defaultValue)
+      
 
       function getTypesArray(this: JokeFilterComponent): any[] {
-        console.log("SINGLE",doesTypePropertyExists("single"), defaultValue.type.twopart)
+        
         let singleValue = doesTypePropertyExists("single") ? defaultValue.type.single : (
           doesTypePropertyExists("twopart") ? false :  true
         );
@@ -271,7 +271,7 @@ export class JokeFilterComponent implements OnInit {
   
   onFormSubmit(_value: any) {
     if(this.form.invalid) {
-      console.log("THE FORM IS INVALID!")
+      
       return;
     }
     const value = JSON.parse(JSON.stringify(_value))
@@ -295,11 +295,10 @@ export class JokeFilterComponent implements OnInit {
 
     value.idRange = value.idRange.oneNumber ? (value.idRange["min"] || value.idRange["max"] || "null")?.toString() :`${value.idRange["min"]}-${value.idRange["max"]}`
 
-    console.log(value.idRange, typeof value.idRange)
+    
     if(value.idRange.toLowerCase().includes("null")) {
       delete value.idRange;
     }
-    console.log(value)
     this.joke = this.http.getAdvanced(categories, value)
   }
 
