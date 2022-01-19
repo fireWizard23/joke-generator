@@ -6,7 +6,10 @@ import { AnyTypeJoke, getJokeString, Joke } from '../misc/joke.model';
 })
 export class JokifyPipe implements PipeTransform {
 
-  transform(value: Joke) : string |string[] {
+  transform(value: Joke) : string {
+    if(value == null) {
+      return "";
+    }
     return getJokeString(value)!;
   }
 
