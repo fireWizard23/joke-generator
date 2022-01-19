@@ -2,7 +2,12 @@
     <p class="joke-text" style="white-space: pre-line;"  >
         {{ joke | jokify}}
     </p>
-    <p class="joke-category">
-        {{joke.category}}
-    </p>
+    <div class="joke-info flex-center">
+        <p class="joke-category">
+            {{joke.category}}
+        </p>
+        <p class="joke-id">
+            {{joke.id}}
+        </p>
+    </div>
 </div>

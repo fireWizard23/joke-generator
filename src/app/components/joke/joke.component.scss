@@ -23,9 +23,20 @@
         border-radius: 1rem;
     }
 
+    &-info {
+        justify-content: start;
+        align-items: center;
+        height: 10vh;
+        gap: 2em;
+    }
+
+    &-id {
+        background-color: #FF6B6B;
+        padding: 0.5em 1em;
+    }
+
 
     &-category {
-        align-self: flex-start;
         background-color: #FF6B6B;
         padding: 0.5em 1em;
     }
