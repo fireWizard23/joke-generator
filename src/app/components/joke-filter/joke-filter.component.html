@@ -79,12 +79,23 @@
 
     <div class="input-container id-range" formGroupName="idRange">
         <label >
-            Id Range: 
-            <input type="number" name="idRange-min" min="0" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
-            {{idRange.value.min}}
-            <input type="number" name="idRange-max" min="0" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
-            {{idRange.value.max}}
-            <input type="checkbox" name="oneNumber" id="oneNumber" formControlName="oneNumber" (change)="onIdRangeChange($event)"> {{idRange.value.oneNumber}}
+            <h3>
+                Id Range: 
+            </h3>
+            <label>
+                {{!idRange.value.oneNumber ? 'Min' : ""}}
+                <input type="number" name="idRange-min" min="0" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
+                {{idRange.value.min}}
+            </label>
+            <label *ngIf="!idRange.value.oneNumber">
+                Max
+                <input type="number" name="idRange-max" min="0" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
+                {{idRange.value.max}}
+            </label>
+            <label>
+                <input type="checkbox" name="oneNumber" id="oneNumber" formControlName="oneNumber" (change)="onIdRangeChange($event)">
+                Same
+            </label>
         </label>
     </div>
 
