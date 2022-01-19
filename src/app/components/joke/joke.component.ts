@@ -8,6 +8,7 @@ import { Joke } from 'src/app/misc/joke.model';
 })
 export class JokeComponent  {
   @Input() joke!: Joke;
+  @Input() listType?:boolean = true;
   constructor() { }
 
 }

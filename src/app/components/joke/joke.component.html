@@ -1,5 +1,5 @@
-<div class="joke-container">
-    <p class="joke-text" style="white-space: pre-line;" >
+<div class="joke-container" [ngClass]="{'listType' : listType}">
+    <p class="joke-text" style="white-space: pre-line;"  >
         {{ joke | jokify}}
     </p>
     <p class="joke-category">
