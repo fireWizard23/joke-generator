@@ -1,19 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+
+
 :root {
-    --white-text: #f4f4f4;
-    --brand-color: rgb(13, 92, 13);
-    --brand-color-darker: rgb(6, 70, 6);
+    --color-background-primary: #2F2D2E;
+    --color-nav-primary: #D72483;
+    --color-brand-primary: #FD3E81;
+    --color-nav-link-primary: #0582CA;
+    
+    --color-text-primary: #ffffff;
 }
 
 .container {
     width: 90%;
     margin: auto;
+
 }
 
 body {
-    background-color: #f3f3f3;
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: 'Poppins';
 }
 
 * {
     margin: 0;
+    padding: 0;
 }

@@ -1,5 +1,16 @@
 <header class="navbar">
-    <div class="navbar-container">
-        <a  routerLink="/" class="navbar-brand"  >{{ innerWidth > 500 ? 'Joke Generator' : 'JokeGenerator'}}</a>
+    <div class="container">
+        <a routerLink="/" class="brand">
+            Joke Generator
+        </a>
+        <nav>
+            <ul>
+                <li>
+                    <a class="navlink" routerLink="/joke/filter" >
+                        Filter
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </header>
