@@ -12,6 +12,7 @@ import { ShareModule } from 'ngx-sharebuttons';
 import { JokeFilterComponent } from './components/joke-filter/joke-filter.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JokeFilterFormComponent } from './components/joke-filter-form/joke-filter-form.component';
+import { JokifyPipe } from './pipes/jokify.pipe';
 
 
 
@@ -24,6 +25,7 @@ import { JokeFilterFormComponent } from './components/joke-filter-form/joke-filt
     NotFoundComponent,
     JokeFilterComponent,
     JokeFilterFormComponent,
+    JokifyPipe,
   ],
   imports: [
     BrowserModule,

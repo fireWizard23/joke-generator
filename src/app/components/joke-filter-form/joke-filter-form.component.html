@@ -2,7 +2,7 @@
 (ngSubmit)="handleFormSubmit(form.value)"
 >
     <div class="categories input-container"
-    formArrayName="categories"
+    formArrayName="categories"  
     >
         <h3>Categories</h3>
         <label 
@@ -14,7 +14,6 @@
             formControlName="value"
             >
             {{c.value.name}} 
-            {{c.value.value}}
             <br>
         </label>
     </div>
@@ -31,7 +30,6 @@
             formControlName="value"
             >
             {{c.value.name}} 
-            {{c.value.value}}
             <br>
         </label>
     </div>
@@ -49,7 +47,6 @@
             (change)="onTypeChange($event)"
             >
             {{c.value.displayName || c.value.name}} 
-            {{c.value.value}}
             <br>
         </label>
         <p class="warning"  *ngIf="oneTypeInputIsChecked">
@@ -58,7 +55,9 @@
     </div>
     <div class="input-container contains">
         <label for="contains">
-            Contains: 
+            <h3>
+                Contains (optional): 
+            </h3>
             <input type="text" id="contains" formControlName="contains">
         </label>
     </div>
@@ -71,12 +70,10 @@
             <label>
                 {{!idRange.value.oneNumber ? 'Min' : ""}}
                 <input type="number" name="idRange-min" min="0" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
-                {{idRange.value.min}}
             </label>
             <label *ngIf="!idRange.value.oneNumber">
                 Max
                 <input type="number" name="idRange-max" min="0" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
-                {{idRange.value.max}}
             </label>
             <label>
                 <input type="checkbox" name="oneNumber" id="oneNumber" formControlName="oneNumber" (change)="onIdRangeChange($event)">
@@ -92,7 +89,6 @@
         </label>
     </div>
 
-    <a routerLink="/joke/filter">Clear Filters</a>
-    
-    <input type="submit" value="Submit"  >
+    <a routerLink="/joke/filter" class="btn">Clear Filters</a> 
+    <input type="submit" class="btn primary" value="Submit"  >
 </form>

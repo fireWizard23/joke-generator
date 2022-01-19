@@ -1,16 +1,21 @@
 
-<div *ngIf="(joke | async) as j">
-    <ol *ngIf="isMultipleJokes(j)">
-        <li *ngFor="let _j of j.jokes">
-            {{_j | json}}
-            <br>
-        </li>
-    </ol>
-    <p *ngIf="!isMultipleJokes(j)">
-        {{j | json}}
-    </p>
-</div>
 
-<app-joke-filter-form (onFormSubmit)="handleSubmit($event)" (onUrlInit)="handleUrl($event)" ></app-joke-filter-form>
 
+<main>
+    <section class="container">
+        
+        <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" (onUrlInit)="handleUrl($event)" ></app-joke-filter-form>
+        <div *ngIf="(joke | async) as j">
+            <ol *ngIf="isMultipleJokes(j)">
+                <li *ngFor="let _j of j.jokes">
+                    {{_j | jokify}}
+                    <br>    
+                </li>
+            </ol>
+            <p *ngIf="!isMultipleJokes(j)">
+                {{j | jokify}}
+            </p>
+        </div>
+    </section>
+</main>
 
