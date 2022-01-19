@@ -65,10 +65,10 @@ export class JokeFilterComponent implements OnInit {
         return result;
       }, {});
 
-      console.log(formValuesFromUrl)
-
       const keysOfFormValues = Object.keys(formValuesFromUrl);
       const commaSeperatedKeys = keysOfFormValues.filter((v) => v != "contains" && v != "idRange" && v != "amount")
+
+
 
       commaSeperatedKeys.forEach((key) => {
         const currentItem = formValuesFromUrl[key];
@@ -88,7 +88,6 @@ export class JokeFilterComponent implements OnInit {
           oneNumber: min == max
         }        
       }
-
 
       this.form = this.fb.group({
         

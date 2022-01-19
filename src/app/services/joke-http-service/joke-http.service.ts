@@ -100,7 +100,7 @@ export class JokeHttpService  {
   public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory[], opts: JokeUrlParams): Observable<T> {
     const _opts = opts as any;
     let params = new HttpParams();
-    if(typeof opts.idRange != "string") {
+    if(typeof opts.idRange != "string" && opts.idRange != undefined) {
       if(opts.idRange?.oneNumber) {
         opts.idRange = opts.idRange.min.toString();
       } else {
