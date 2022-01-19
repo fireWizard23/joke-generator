@@ -1,0 +1,98 @@
+<form [formGroup]="form" 
+(ngSubmit)="handleFormSubmit(form.value)"
+>
+    <div class="categories input-container"
+    formArrayName="categories"
+    >
+        <h3>Categories</h3>
+        <label 
+        *ngFor="let c of categories.controls; let i = index;"
+        for="{{c.value.name}}"
+        [formGroupName]="i"
+        >
+            <input type="checkbox" name="categories"  id={{c.value.name}} 
+            formControlName="value"
+            >
+            {{c.value.name}} 
+            {{c.value.value}}
+            <br>
+        </label>
+    </div>
+    <div class="flags input-container"
+    formArrayName="blacklistFlags"
+    >
+        <h3>Blacklist Flags</h3>
+        <label 
+        *ngFor="let c of blacklistFlags.controls; let i = index;"
+        for="{{c.value.name}}"
+        [formGroupName]="i"
+        >
+            <input type="checkbox" name="blacklistFlags"  id={{c.value.name}} 
+            formControlName="value"
+            >
+            {{c.value.name}} 
+            {{c.value.value}}
+            <br>
+        </label>
+    </div>
+    <div class="type input-container"
+    formArrayName="type"
+    >
+        <h3>Joke Type</h3>
+        <label 
+        *ngFor="let c of type.controls; let i = index;"
+        for="{{c.value.name}}"
+        [formGroupName]="i"
+        >
+            <input type="checkbox" name="type"  id={{c.value.name}} 
+            formControlName="value"
+            (change)="onTypeChange($event)"
+            >
+            {{c.value.displayName || c.value.name}} 
+            {{c.value.value}}
+            <br>
+        </label>
+        <p class="warning"  *ngIf="oneTypeInputIsChecked">
+            There must be atleast one value
+        </p>
+    </div>
+    <div class="input-container contains">
+        <label for="contains">
+            Contains: 
+            <input type="text" id="contains" formControlName="contains">
+        </label>
+    </div>
+
+    <div class="input-container id-range" formGroupName="idRange">
+        <label >
+            <h3>
+                Id Range: 
+            </h3>
+            <label>
+                {{!idRange.value.oneNumber ? 'Min' : ""}}
+                <input type="number" name="idRange-min" min="0" id="idRange-min" formControlName="min" (change)="onIdRangeChange($event)">
+                {{idRange.value.min}}
+            </label>
+            <label *ngIf="!idRange.value.oneNumber">
+                Max
+                <input type="number" name="idRange-max" min="0" id="idRange-max" formControlName="max" (change)="onIdRangeChange($event)">
+                {{idRange.value.max}}
+            </label>
+            <label>
+                <input type="checkbox" name="oneNumber" id="oneNumber" formControlName="oneNumber" (change)="onIdRangeChange($event)">
+                Same
+            </label>
+        </label>
+    </div>
+
+    <div class="input-container amount">
+        <label for="contains">
+            Amount: 
+            <input type="number" name="contains" min="1"  max="10"  id="contains" formControlName="amount">
+        </label>
+    </div>
+
+    <a routerLink="/joke/filter">Clear Filters</a>
+    
+    <input type="submit" value="Submit"  >
+</form>
