@@ -16,8 +16,12 @@ export class JokePageComponent implements OnInit, OnDestroy {
   joke!: AnyTypeJoke;
   jokeError!: JokeError;
   jokeString!: string | null;
+
+  isLoading = true;
   
   private _jokeSubscription!: Subscription;
+
+  
 
   id!: number;
 
@@ -68,6 +72,7 @@ export class JokePageComponent implements OnInit, OnDestroy {
             if(joke.error === true) {
               this.jokeError = jokeToError(joke )
             }
+            this.isLoading = false;
             this.joke = joke;
             this.jokeString = getJokeString(joke)
             this._metaService.setDescription(this.jokeString!)
@@ -79,8 +84,7 @@ export class JokePageComponent implements OnInit, OnDestroy {
 
 
   handleClick() {
-    this.jokeString = null;
-    
+    this.isLoading = true;
     this.httpService.changeCurrentJoke(); 
   }
 

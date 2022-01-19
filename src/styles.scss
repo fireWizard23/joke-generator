@@ -31,6 +31,9 @@
     &:hover {
         filter: saturate(1.5);
     }
+    &:disabled {
+        filter: grayscale(1);
+    }
 }
 
 
