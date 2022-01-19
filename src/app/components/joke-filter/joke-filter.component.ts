@@ -65,6 +65,8 @@ export class JokeFilterComponent implements OnInit {
         return result;
       }, {});
 
+      console.log(formValuesFromUrl)
+
       const keysOfFormValues = Object.keys(formValuesFromUrl);
       const commaSeperatedKeys = keysOfFormValues.filter((v) => v != "contains" && v != "idRange" && v != "amount")
 
@@ -75,7 +77,11 @@ export class JokeFilterComponent implements OnInit {
       })
 
       if(formValuesFromUrl.idRange) {
-        const [min, max] = (formValuesFromUrl?.idRange as string)?.split("-");
+        let [min, max] = (formValuesFromUrl?.idRange as string)?.split("-");
+
+        if(!(formValuesFromUrl.idRange as string).includes("-")) {
+          max = min;
+        }
         formValuesFromUrl.idRange = {
           min,
           max,
@@ -334,6 +340,8 @@ export class JokeFilterComponent implements OnInit {
       
       return;
     }
+
+    console.log(_value)
     
     const value = JSON.parse(JSON.stringify(_value))
 
@@ -360,7 +368,9 @@ export class JokeFilterComponent implements OnInit {
       delete value.idRange;
     }
 
+    
     const valueToSubmit = {categories, ...value}
+    console.log("VALUE TO SUBMIT", valueToSubmit)
     this._router.navigate([], {
       relativeTo: this._ar,
       queryParams: valueToSubmit,
