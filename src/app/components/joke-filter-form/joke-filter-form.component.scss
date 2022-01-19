@@ -1,12 +1,34 @@
 form {
     background-color: var(--color-background-secondary);
-    padding: 2em;
+    padding: 1em;
     margin-top: 1rem;
+    width: 50vw;
 
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1em;
     .input-container {
         padding: 1em;
-        
+        input {
+            padding: 0.1rem;
+        }
+        &.id-range {
+            input {
+                width: clamp(2em, 4em, 5em);
+            }
+        }
     }
 
+    .button-utilities {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    input[type="submit"] {
+        font-size: 1.5rem;
+
+    }
 
 }

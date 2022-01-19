@@ -3,8 +3,9 @@
 
 <main>
     <section class="container">
-        
-        <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" (onUrlInit)="handleUrl($event)" ></app-joke-filter-form>
+        <div class="flex-center">
+            <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" (onUrlInit)="handleUrl($event)" ></app-joke-filter-form>
+        </div>
         <div *ngIf="(joke | async) as j">
             <ol *ngIf="isMultipleJokes(j)">
                 <li *ngFor="let _j of j.jokes">
