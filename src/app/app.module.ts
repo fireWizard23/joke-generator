@@ -13,6 +13,7 @@ import { JokeFilterComponent } from './components/joke-filter/joke-filter.compon
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JokeFilterFormComponent } from './components/joke-filter-form/joke-filter-form.component';
 import { JokifyPipe } from './pipes/jokify.pipe';
+import { JokeComponent } from './components/joke/joke.component';
 
 
 
@@ -26,6 +27,7 @@ import { JokifyPipe } from './pipes/jokify.pipe';
     JokeFilterComponent,
     JokeFilterFormComponent,
     JokifyPipe,
+    JokeComponent,
   ],
   imports: [
     BrowserModule,

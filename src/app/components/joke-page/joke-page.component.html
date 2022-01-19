@@ -26,14 +26,7 @@
 <main>
     <div class="container">
         <section class="content">
-            <div class="joke-container">
-                <p class="joke-text" style="white-space: pre-line;" >
-                    {{ jokeString}}
-                </p>
-                <p class="joke-category">
-                    {{joke.category}}
-                </p>
-            </div>
+            <app-joke [joke]="joke"></app-joke>
             <button class="btn primary joke-another" [disabled]="isLoading" (click)="handleClick()">
                 {{isLoading ? "Getting": "Another one"}}
             </button>
