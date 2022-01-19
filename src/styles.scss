@@ -3,16 +3,41 @@
 
 :root {
     --color-background-primary: #2F2D2E;
+    --color-background-seconday: #B6C2D9;
     --color-nav-primary: #D72483;
     --color-brand-primary: #FD3E81;
     --color-nav-link-primary: #0582CA;
+    --color-joke-bg-primary: #016FB9;
     
     --color-text-primary: #ffffff;
+
+    --color-button-primary: #FD3E81;
+
 }
 
 .container {
     width: 90%;
     margin: auto;
+
+}
+
+.btn {
+    cursor: pointer;    
+    border: none;
+    padding: 0.5em;
+    color: inherit;
+    font-weight: 600;
+    border-radius: 0.5em;
+    &:hover {
+        filter: saturate(1.5);
+    }
+}
+
+
+
+.btn.primary {
+    background-color: var(--color-button-primary);
+    font-weight: 700;
 
 }
 

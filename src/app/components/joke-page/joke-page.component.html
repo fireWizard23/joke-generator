@@ -1,4 +1,4 @@
-<div class="joke-form-container" *ngIf="!jokeError; else error">
+<!-- <div class="joke-form-container" *ngIf="!jokeError; else error">
 
     <div class="joke-container">
         <p class="joke-text" style="white-space: pre-line;" >
@@ -21,4 +21,24 @@
         {{jokeError.message}} {{jokeError.additionalInfo}}
     </h3>
 </ng-template>
+ -->
+
+<main>
+    <div class="container">
+        <section class="content">
+            <div class="joke-container">
+                <p class="joke-text" style="white-space: pre-line;" >
+                    {{ jokeString  || 'Loading...' }}
+                </p>
+                <p class="joke-category">
+                    {{joke.category}}
+                </p>
+            </div>
+            <button class="btn primary joke-another" (click)="handleClick()">
+                Another one
+            </button>
+        </section>
+    </div>
+</main>
+
 

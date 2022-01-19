@@ -1,95 +1,60 @@
-.joke{
+.joke {
 
-    &-form-container {
+    &-container{
+        margin-top: 5em;
+        width: 60vw;
+        background-color: var(--color-background-seconday);
+        padding: 4em;
+
+        box-shadow: inset 0px 0px 15px 5px rgba($color: #000000, $alpha: 0.5);
         display: flex;
         flex-direction: column;
-        align-items: center;
-    }
-
-    &-container {
-        width: 90vw;
-        font-size: 1.5em;
-        box-sizing: border-box;
-        margin: 1rem 0;
-        padding: 0.5rem 1rem;
-
-        border: 3px solid var(--brand-color);
-        background-color: rgb(235, 233, 233);
-        border-radius: 0.7em;
-
-        display: flex;
-        flex-direction: column;        
-        align-items: flex-start;
 
     }
-    
-    &-text{
-        margin: 1.5rem 0;
-        font-size: 1.5em;
-        text-overflow: clip;
 
+
+    &-text {
+        margin: 1em;
+        font-size: 1.5rem;
+        background-color: var(--color-joke-bg-primary);
+        padding: 1em;
+        border-radius: 1rem;
     }
+
 
     &-category {
-        background-color: var(--brand-color);
-        font-size: 1.2rem;
-        color: var(--white-text);
-        text-overflow: clip;
-        width: 10%;
-        max-width: 10rem;
-        min-width: 7rem;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        box-sizing: border-box;
-        border-bottom: 3px solid var(--brand-color-darker);
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
+        align-self: flex-start;
+        background-color: #FF6B6B;
+        padding: 0.5em 1em;
     }
 
-
-    &-button {
+    &-another {
+        align-self: flex-end;
         width: 10em;
-        height: 3em;
-        font-size: 2em;
-        padding: 0;
-        cursor: pointer;
-
-    }
-
-
-}
-
-@media(max-width: 800px) {
-
-    .joke-text {
-        font-size: 1.2em;
+        font-size: 1.5rem;
+        border-radius: 0;
+        
     }
 
 }
 
+main {
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-@media(max-width: 600px) {
+        .content {
+            display: flex;
+            flex-direction: column;
+            
+        }
 
-    .joke-text {
-        font-size: 0.9em;
     }
 
-    .joke-category {
-        font-size: 0.7rem;
-        min-width: 5rem;
-    }
+
+
+
 
 
 }
-
-@media(max-width: 350px) {
-
-    .joke-text {
-        font-size: 0.7em;
-    }
-
-}
-
