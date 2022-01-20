@@ -240,7 +240,7 @@ export class JokeFilterFormComponent implements OnInit {
 
   //#endregion
 
-  handleFormSubmit(_value: any) {
+  handleFormSubmit(_value: any, toggle=true) {
     if(this.form.invalid) {
       
       return;
@@ -262,15 +262,16 @@ export class JokeFilterFormComponent implements OnInit {
 
     })
 
-    this.onFormSubmit.emit(_value);   
+    this.onFormSubmit.emit({_value, toggle});   
   }
+
 
   patchFormValue(_e: any, options?: {
     onlySelf?: boolean | undefined;
     emitEvent?: boolean | undefined;
   } ) {
     const keys = Object.keys(_e);
-    if(keys.length < 0) {
+    if(keys.length <= 0) {
       return;
     }
     const valueToSet = cloneDeep(_e)
@@ -311,7 +312,8 @@ export class JokeFilterFormComponent implements OnInit {
     })
 
     this.form.setValue(formValuesCopy)
-
+    console.log(formValuesCopy)
+    setTimeout(() => this.handleFormSubmit(this.form.value, false))
   }
 
 }

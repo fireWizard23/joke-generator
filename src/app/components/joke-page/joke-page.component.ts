@@ -38,7 +38,9 @@ export class JokePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._jokeFilters.filterChanges.subscribe((filters: any) => this.filters = filters)
+    this._jokeFilters.filterChanges.subscribe((filters: any) => {
+      this.filters = filters;
+    })
 
     this._jokeSubscription = this.httpService.onJokeChange$
       .subscribe((joke) => {

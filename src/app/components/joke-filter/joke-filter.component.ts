@@ -1,4 +1,4 @@
-import {  AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {  AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {  Observable, pairwise,  } from 'rxjs';
@@ -18,10 +18,10 @@ export class JokeFilterComponent implements OnInit, AfterViewInit  {
 
   @ViewChild(JokeFilterFormComponent, {static: false}) filterForm!: JokeFilterFormComponent;
 
-  isShown = false;
+  isHidden = true;
 
   constructor (private navService: NavbarEventsService, private _jokeFilters: JokeFiltersService,
-    private _ar: ActivatedRoute, private _router: Router) {}
+    private _ar: ActivatedRoute, private _router: Router, private cd: ChangeDetectorRef) {}
 
 
   ngAfterViewInit(): void {
@@ -36,13 +36,16 @@ export class JokeFilterComponent implements OnInit, AfterViewInit  {
 
   ngOnInit(): void {
     this.navService.toggleStateChanges.subscribe((v) => {
-      this.isShown = v;
+      this.isHidden = v;
+      this.cd.detectChanges()
     })
   }
 
-  handleSubmit(e: any) {
+  handleSubmit(val: any) {
+    const e = val._value;
+
     this._jokeFilters.changeFilters(e);
-    this.navService.toggleFilterButton()
+    val.toggle && this.navService.toggleFilterButton()
   }
 
   

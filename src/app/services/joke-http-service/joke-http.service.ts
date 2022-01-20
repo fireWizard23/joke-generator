@@ -53,14 +53,11 @@ export class JokeHttpService  {
   }
 
   public changeCurrentJoke(filters?: any) {
-    console.log("FILTESR", filters)
     if(!filters || Object.keys(filters).length == 0) {
-      console.log("GETTING RANDOM JOKE", filters)
       this.getRandomJoke(); 
       return;
     }
     filters = parseFilters(filters);
-    console.log(filters)
 
     this.getAdvanced(filters.categories, filters)
       .subscribe((v) => {
@@ -162,7 +159,6 @@ export function parseFilters(_filters: JokeUrlParams & {[key: string] : any}) : 
   const filters = cloneDeep(_filters);
 
   if(typeof filters.idRange != "string" && filters.idRange != undefined) {
-    debugger;
     if(filters.idRange?.oneNumber) {
       filters.idRange = filters.idRange.min?.toString();
     } else {
