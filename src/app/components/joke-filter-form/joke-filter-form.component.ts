@@ -41,7 +41,6 @@ export class JokeFilterFormComponent implements OnInit {
   constructor(private fb : FormBuilder, private _ar: ActivatedRoute, private _router: Router) { }
 
   @Output() onFormSubmit = new EventEmitter<any>();
-  @Output() onUrlInit = new EventEmitter<any>();
 
   ngOnInit(): void {
     
@@ -211,9 +210,6 @@ export class JokeFilterFormComponent implements OnInit {
 
       this.categories.patchValue([]) // So there would be two of emitted values!
 
-      if(keysOfFormValues.length > 0) {
-        this.onUrlInit.emit(formValuesFromUrl);
-      }
         
   })
     
@@ -325,8 +321,23 @@ export class JokeFilterFormComponent implements OnInit {
       return;
     }
 
-    this.onFormSubmit.emit(_value);   
+    Object.keys(_value).forEach((key) => {
+      const currentValue = _value[key]
+      if(Array.isArray(currentValue)){ 
+        _value[key] = currentValue.reduce((result: any, item) => {
+          if(!item.value) {
+            return result;
+          }
+          result[item.name] = true;
+          return result;
+        }, {});
+        return;
+      }
 
+
+    })
+
+    this.onFormSubmit.emit(_value);   
   }
 
 }

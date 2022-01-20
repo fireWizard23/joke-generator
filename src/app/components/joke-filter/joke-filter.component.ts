@@ -5,70 +5,31 @@ import {  Observable, pairwise,  } from 'rxjs';
 import { AnyTypeJoke, isMultipleJokes, MultipleJokes } from 'src/app/misc/joke.model';
 import { JokeHttpService } from 'src/app/services/joke-http-service/joke-http.service';
 import { differenceWith, isEqual, } from 'lodash'
+import { NavbarEventsService } from 'src/app/services/navbar-events.service';
+import { JokeFiltersService } from 'src/app/services/joke-filters.service';
 @Component({
   selector: 'app-joke-filter',
   templateUrl: './joke-filter.component.html',
   styleUrls: ['./joke-filter.component.scss']
 })
-export class JokeFilterComponent  {
+export class JokeFilterComponent implements OnInit  {
 
-  joke!: Observable<AnyTypeJoke | MultipleJokes>;
-  constructor(private http: JokeHttpService, private _ar: ActivatedRoute, private _router: Router) { }
+  isShown = false;
 
+  constructor (private navService: NavbarEventsService, private _jokeFilters: JokeFiltersService) {}
 
-
-  isMultipleJokes(s: any) : s is MultipleJokes {
-    return isMultipleJokes(s)
+  ngOnInit(): void {
+    this.navService.toggleStateChanges.subscribe((v) => {
+      this.isShown = v;
+    })
   }
 
-  handleUrl(v: any) {
-    const categories = Object.keys(v.categories).reduce((result: any[], key) => {
-      result.push(key)
-      return result;
-    }, [] );
-
-    delete v.categories;
-
-    this.joke = this.http.getAdvanced(categories, v);
+  handleSubmit(e: any) {
+    this._jokeFilters.changeFilters(e);
+    this.navService.toggleFilterButton()
   }
 
-  handleSubmit(_value: any) {
-    console.log(_value)
-    const value = JSON.parse(JSON.stringify(_value))
-
-    const categories = value.categories.reduce((result: string[], item: any) => {
-      item.value === true && result.push(item.name)
-      return result;
-    }, []).toString()
-
-    delete value.categories;
-    value.blacklistFlags = value.blacklistFlags.reduce((result: any[], v: any) => {
-      v.value && result.push(v.name)
-      return result;
-    }, []).toString()
-
-    value.type = value.type.reduce((result: any[], v: any) => {
-      v.value && result.push(v.name)
-      return result;
-    }, []).toString()
-
-    value.idRange = value.idRange.oneNumber ? (value.idRange["min"] || value.idRange["max"] || "null")?.toString() :`${value.idRange["min"]}-${value.idRange["max"]}`
-
-    
-    if(value.idRange.toLowerCase().includes("null")) {
-      delete value.idRange;
-    }
-
-    
-    const valueToSubmit = {categories, ...value}
-    console.log("VALUE TO SUBMIT", valueToSubmit)
-    this._router.navigate([], {
-      relativeTo: this._ar,
-      queryParams: valueToSubmit,
-      queryParamsHandling: "merge"
-    }) 
-  }
-
+  
 
 }
 

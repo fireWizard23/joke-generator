@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { NavbarEventsService } from 'src/app/services/navbar-events.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,17 +8,18 @@ import { Component, HostListener, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  innerWidth!: number;
+  // innerWidth!: number;
 
-  @HostListener('window:resize')
-  onResize() {
-    this.innerWidth = window.innerWidth;
+
+  constructor(private _navService: NavbarEventsService) {
+
   }
 
-  constructor() { }
-
   ngOnInit(): void {
-    this.innerWidth = window.innerWidth;
+  }
+
+  handleClick() : void {
+    this._navService.toggleFilterButton();
   }
 
 

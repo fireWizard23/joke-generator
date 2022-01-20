@@ -1,22 +1,5 @@
 
-
-
-<main>
-    <section class="container">
-        <div class="flex-center flex-column">
-            <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" (onUrlInit)="handleUrl($event)" ></app-joke-filter-form>
-        <div *ngIf="(joke | async) as j">
-            <div class="jokes-container flex-center flex-column" *ngIf="isMultipleJokes(j)">
-                <div  *ngFor="let _j of j.jokes">
-                    <app-joke [joke]="_j" [listType]="true"></app-joke>
-                </div>
-            </div>
-            <app-joke [joke]="j" *ngIf="!isMultipleJokes(j)">
-                
-            </app-joke>
-        </div>
-    </div>
-
-    </section>
-</main>
+<section class="container flex-center" *ngIf="isShown">
+        <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" ></app-joke-filter-form>
+</section>
 

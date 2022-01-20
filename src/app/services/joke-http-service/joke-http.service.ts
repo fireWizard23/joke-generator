@@ -6,6 +6,7 @@ import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/commo
 import {TwoPartTypeJoke,Joke, SingleTypeJoke, JokeCategory, JokeType, JokeFlags, JokeLang, AnyTypeJoke} from '../../misc/joke.model';
 import { Map } from 'immutable';
 import { ActivatedRoute } from '@angular/router';
+import {cloneDeep} from 'lodash'
 
 
 type JokeUrlOptions = {
@@ -51,8 +52,22 @@ export class JokeHttpService  {
     })
   }
 
-  public changeCurrentJoke() {
-    this.getRandomJoke();
+  public changeCurrentJoke(filters?: any) {
+    console.log("FILTESR", filters)
+    if(!filters || Object.keys(filters).length == 0) {
+      console.log("GETTING RANDOM JOKE", filters)
+      this.getRandomJoke(); 
+      return;
+    }
+    filters = parseFilters(filters);
+    console.log(filters)
+
+    this.getAdvanced(filters.categories, filters)
+      .subscribe((v) => {
+        this._onJokeChange$.next(v);
+        this.currentJoke = v;
+      })
+
   }
 
   public getRandomJoke() {
@@ -98,26 +113,12 @@ export class JokeHttpService  {
   }
 
   public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory[], opts: JokeUrlParams): Observable<T> {
-    const _opts = opts as any;
+    const _opts = parseFilters(opts) as any;
     let params = new HttpParams();
-    if(typeof opts.idRange != "string" && opts.idRange != undefined) {
-      if(opts.idRange?.oneNumber) {
-        opts.idRange = opts.idRange.min.toString();
-      } else {
-        opts.idRange = `${opts.idRange?.min}-${opts.idRange?.max}`
-      }
-    }
-
+    delete _opts.categories;
     for(const key in _opts) {
       let currentValue = _opts[key];
-      if(typeof currentValue === "object") {
-        const keys = Object.keys(currentValue).filter((k) => currentValue[k] === true);
-
-        if(keys.length == 0) {
-          continue;
-        }
-        currentValue = keys.toString();
-      }
+      
       params = params.set(key, currentValue);
     }
 
@@ -155,6 +156,38 @@ export class JokeHttpService  {
 
 
 
+}
+
+export function parseFilters(_filters: JokeUrlParams & {[key: string] : any}) : object{
+  const filters = cloneDeep(_filters);
+
+  if(typeof filters.idRange != "string" && filters.idRange != undefined) {
+    debugger;
+    if(filters.idRange?.oneNumber) {
+      filters.idRange = filters.idRange.min?.toString();
+    } else {
+      filters.idRange = `${filters.idRange?.min}-${filters.idRange?.max}`
+    }
+  }
+
+  for(const key in filters) {
+    let currentValue = filters[key];
+    if(currentValue == null || currentValue == "" || Object.keys(currentValue).length == 0) {
+      delete filters[key]
+      continue;
+    }
+    if(typeof currentValue === "object") {
+      const keys = Object.keys(currentValue).filter((k) => currentValue[k] === true);
+
+      if(keys.length == 0) {
+        continue;
+      }
+      currentValue = keys.toString();
+    }
+    filters[key] = currentValue;
+  }
+
+  return filters;
 }
 
 export interface JokeUrlParams {
