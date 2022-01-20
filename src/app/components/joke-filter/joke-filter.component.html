@@ -1,5 +1,6 @@
-
-<section class="container flex-center" *ngIf="isShown">
-        <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" ></app-joke-filter-form>
-</section>
+<div [hidden]="!isShown">
+        <section class="container flex-center" >
+                <app-joke-filter-form (onFormSubmit)="handleSubmit($event)" ></app-joke-filter-form>
+        </section>
+</div>
 

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { differenceWith, isEqual } from 'lodash';
+import { cloneDeep, differenceWith, isEqual } from 'lodash';
 import { pairwise } from 'rxjs';
 import { isMultipleJokes, MultipleJokes } from 'src/app/misc/joke.model';
+import { Keyable } from '../joke-filter/joke-filter.component';
 
 @Component({
   selector: 'app-joke-filter-form',
@@ -15,6 +16,8 @@ export class JokeFilterFormComponent implements OnInit {
   form!: FormGroup;
 
   oneTypeInputIsChecked = false;
+
+  
 
  //#region Form Properties
   get categories() {
@@ -38,180 +41,102 @@ export class JokeFilterFormComponent implements OnInit {
   }
  //#endregion
 
-  constructor(private fb : FormBuilder, private _ar: ActivatedRoute, private _router: Router) { }
+  constructor(private fb : FormBuilder) { }
 
   @Output() onFormSubmit = new EventEmitter<any>();
 
   ngOnInit(): void {
+    this.form = this.fb.group({
+      categories: this.fb.array( [
+        {
+          name: 'any',
+          value: true,
+        },
+        {
+          name: 'misc',
+          value: false,
+        },
+        {
+          name: 'dark',
+          value: false,
+        },
+        {
+          name: 'programming',
+          value: false,
+        },
+        {
+          name: 'spooky',
+          value: false,
+        },
+        {
+          name: 'christmas',
+          value: false,
+        },
+      ].map((v) => {
+        return this.fb.group({ ...v });
+      }) ),
+      language: 'english',
+      blacklistFlags: this.fb.array([
+        {
+          name: "nsfw",
+          value: false,
+        },
+        {
+          name: "religious",
+          value: false,
+        },
+        {
+          name: "political",
+          value: false,
+        },
+        {
+          name: "racist",
+          value: false,
+        },
+        {
+          name: "sexist",
+          value: false,
+        },
+        {
+          name: "explicit",
+          value: false,
+        },
+      ].map((v) => this.fb.group(v))),
+      type: this.fb.array([
+        {
+          name: "single",
+          value: true,
+        },
+        {
+          name: "twopart",
+          displayName: "Two Part",
+          value: true ,
+        }
+      ].map((v) => this.fb.group(v))), 
+      idRange: this.fb.group({
+        min: null,
+        max: null,
+        oneNumber: true,
+      }),
+      contains: "",
+      amount: [1, [Validators.min(1), Validators.max(10)]],
+
+    });
+  
     
-    this._ar.queryParams.subscribe((v) => {
-      
-      
-      const keysToCheck = [
-        "categories",
-        "amount",
-        "idRange",
-        "blacklistFlags",
-        "type",
-        "contains",
-      ];
 
-      const formValuesFromUrl = keysToCheck.reduce((result: any, item) => {
-        if(v[item] == null || v[item] === "") {
-          return result;
-        }
-        result[item] = v[item]?.toLowerCase();
-        return result;
-      }, {});
-
-      const keysOfFormValues = Object.keys(formValuesFromUrl);
-      const commaSeperatedKeys = keysOfFormValues.filter((v) => v != "contains" && v != "idRange" && v != "amount")
+  
 
 
 
-      commaSeperatedKeys.forEach((key) => {
-        const currentItem = formValuesFromUrl[key];
-        
-        formValuesFromUrl[key] = commaToObject(currentItem);
-      })
+    this.categories.valueChanges.pipe(
+      pairwise()
+    ).subscribe(this.onCategoriesChange.bind(this))
 
-      if(formValuesFromUrl.idRange) {
-        let [min, max] = (formValuesFromUrl?.idRange as string)?.split("-");
-
-        if(!(formValuesFromUrl.idRange as string).includes("-")) {
-          max = min;
-        }
-        formValuesFromUrl.idRange = {
-          min,
-          max,
-          oneNumber: min == max
-        }        
-      }
-
-      this.form = this.fb.group({
-        
-        categories: this.fb.array(
-          createCategoriesArray.bind(this)()
-        ),
-        language: 'english',
-        blacklistFlags: this.fb.array(createBlacklistFlagsArray.bind(this)()),
-        type: this.fb.array(createTypesArray.bind(this)()), 
-        idRange: this.fb.group({
-          min: formValuesFromUrl.idRange?.min || null,
-          max: formValuesFromUrl.idRange?.max || null,
-          oneNumber: formValuesFromUrl.idRange?.oneNumber != undefined ? formValuesFromUrl.idRange.oneNumber : true,
-        }),
-        contains: formValuesFromUrl?.contains || "",
-        amount: [formValuesFromUrl?.amount || 1, [Validators.min(1), Validators.max(10)]],
-
-      });
-      
-      //#region Creation Of Arrays
-      function createBlacklistFlagsArray(this: JokeFilterFormComponent): any[] {
-        return [
-          {
-            name: "nsfw",
-            value: doesFlagsPropertyExists("nsfw") ? formValuesFromUrl.blacklistFlags.nsfw : false,
-          },
-          {
-            name: "religious",
-            value: doesFlagsPropertyExists("religious") ? formValuesFromUrl.blacklistFlags.religious : false,
-          },
-          {
-            name: "political",
-            value: doesFlagsPropertyExists("political") ? formValuesFromUrl.blacklistFlags.political : false,
-          },
-          {
-            name: "racist",
-            value: doesFlagsPropertyExists("racist") ? formValuesFromUrl.blacklistFlags.racist : false,
-          },
-          {
-            name: "sexist",
-            value: doesFlagsPropertyExists("sexist") ? formValuesFromUrl.blacklistFlags.sexist : false,
-          },
-          {
-            name: "explicit",
-            value: doesFlagsPropertyExists("explicit") ? formValuesFromUrl.blacklistFlags.explicit : false,
-          },
-        ].map((v) => this.fb.group(v));
-      }
-
-      function createCategoriesArray(this: JokeFilterFormComponent): any[] {
-        return [
-          {
-            name: 'any',
-            value: doesCategoriesPropertyExists("any") ? formValuesFromUrl.categories.any : true,
-          },
-          {
-            name: 'misc',
-            value: doesCategoriesPropertyExists("misc") ? formValuesFromUrl.categories.misc : false,
-          },
-          {
-            name: 'dark',
-            value: doesCategoriesPropertyExists("dark") ? formValuesFromUrl.categories.dark : false,
-          },
-          {
-            name: 'programming',
-            value: doesCategoriesPropertyExists("programming") ? formValuesFromUrl.categories.programming : false,
-          },
-          {
-            name: 'spooky',
-            value: doesCategoriesPropertyExists("spooky") ? formValuesFromUrl.categories.spooky : false,
-          },
-          {
-            name: 'christmas',
-            value: doesCategoriesPropertyExists("christmas") ? formValuesFromUrl.categories.christmas : false,
-          },
-        ].map((v) => {
-          return this.fb.group({ ...v });
-        });
-      }
-
-      function createTypesArray(this: JokeFilterFormComponent): any[] {
-        
-        let singleValue = doesTypePropertyExists("single") ? formValuesFromUrl.type.single : (
-          doesTypePropertyExists("twopart") ? false :  true
-        );
-        let twoPartValue = doesTypePropertyExists("twopart") ? formValuesFromUrl.type.twopart : (
-          doesTypePropertyExists("single") ? false :  true
-        );
-
-      
-
-        return [
-          {
-            name: "single",
-            value: singleValue,
-          },
-          {
-            name: "twopart",
-            displayName: "Two Part",
-            value: twoPartValue ,
-          }
-        ].map((v) => this.fb.group(v));
-      }
-      //#endregion
-
-      function doesTypePropertyExists(s: string){
-        return formValuesFromUrl.type?.[s] !== undefined;
-      }
-
-      function doesCategoriesPropertyExists(s: string){
-        return formValuesFromUrl.categories?.[s] !== undefined;
-      }
-
-      function doesFlagsPropertyExists(s: string){
-        return formValuesFromUrl.blacklistFlags?.[s] !== undefined;
-      }
-
-      this.categories.valueChanges.pipe(
-        pairwise()
-      ).subscribe(this.onCategoriesChange.bind(this))
-
-      this.categories.patchValue([]) // So there would be two of emitted values!
+    this.categories.patchValue([]) // So there would be two of emitted values!
 
         
-  })
+  
     
   }
 
@@ -275,7 +200,7 @@ export class JokeFilterFormComponent implements OnInit {
     }
 
 
-    if(anyCategory.value === true) {
+    if(anyCategory?.value === true) {
       if(changedProperty?.name != "any" && changedProperty?.value === true) {
         anyCategory.value = false;
       }  else  {
@@ -340,10 +265,86 @@ export class JokeFilterFormComponent implements OnInit {
     this.onFormSubmit.emit(_value);   
   }
 
+  patchFormValue(_e: any, options?: {
+    onlySelf?: boolean | undefined;
+    emitEvent?: boolean | undefined;
+  } ) {
+    const keys = Object.keys(_e);
+    if(keys.length < 0) {
+      return;
+    }
+    const valueToSet = cloneDeep(_e)
+
+    const formValuesCopy = cloneDeep(this.form.value);
+
+    Object.keys(formValuesCopy).forEach((key) => {
+      if(!valueToSet[key]) {
+        return;
+      }
+
+      const currentProp = formValuesCopy[key];
+
+
+      if(key.toLowerCase() == "type") {
+        const typePropertyKeys = Object.keys(valueToSet.type);
+        currentProp.forEach((v: any) => {
+          v.value = typePropertyKeys.includes(v.name);
+        });
+        return;
+      }
+
+      if(Array.isArray(currentProp)) {
+        const indexes = currentProp.reduce((res: number[], item: any, index: number) => {
+            valueToSet?.[key]?.[item?.name] && res.push(index);
+            return res;
+          }, []); 
+          indexes.forEach((e: any) => {
+            const currentItem = currentProp[e];
+            currentItem.value = true;
+          });
+          return;
+      }
+
+      
+
+      formValuesCopy[key] = valueToSet[key];
+    })
+
+    this.form.setValue(formValuesCopy)
+
+  }
+
 }
 function commaToObject(value: string, defaultValue:any=true) {
   return value.split(",").reduce((result, item) => {
     result[item] = defaultValue;
     return result;
   }, {} as any);
+}
+function parseFiltersToFormValues(_v: Keyable) {
+  const v = cloneDeep(_v)
+  const output = [
+    "blacklistFlags",
+    "categories",
+    "idRange",
+    "type"
+  ].reduce((result: any, item) => {
+    const currentItem = v[item];
+    if(currentItem == null) {
+      return result;
+    }
+
+    result[item] = Object.keys(currentItem).reduce((_r: any[], _i) => {
+      _r.push({
+        name: _i,
+        value: currentItem[_i]
+      })
+      return _r;
+    }, []);
+
+    return result;
+  }, {})
+
+
+  return output;
 }
