@@ -57,6 +57,10 @@ export class JokeFilterFormComponent implements OnInit {
           value: false,
         },
         {
+          name: 'pun',
+          value: false,
+        },
+        {
           name: 'dark',
           value: false,
         },
@@ -124,11 +128,6 @@ export class JokeFilterFormComponent implements OnInit {
     });
   
     
-
-  
-
-
-
     this.categories.valueChanges.pipe(
       pairwise()
     ).subscribe(this.onCategoriesChange.bind(this))
@@ -240,12 +239,12 @@ export class JokeFilterFormComponent implements OnInit {
 
   //#endregion
 
-  handleFormSubmit(_value: any, toggle=true) {
+  handleFormSubmit(value: any, toggle=true) {
     if(this.form.invalid) {
       
       return;
     }
-
+    const _value = cloneDeep(value);
     Object.keys(_value).forEach((key) => {
       const currentValue = _value[key]
       if(Array.isArray(currentValue)){ 
@@ -265,11 +264,8 @@ export class JokeFilterFormComponent implements OnInit {
     this.onFormSubmit.emit({_value, toggle});   
   }
 
-
-  patchFormValue(_e: any, options?: {
-    onlySelf?: boolean | undefined;
-    emitEvent?: boolean | undefined;
-  } ) {
+  patchFormValue(_e: any, options?: { onlySelf?: boolean | undefined; emitEvent?: boolean | undefined; }
+  ) {
     const keys = Object.keys(_e);
     if(keys.length <= 0) {
       return;
@@ -285,16 +281,16 @@ export class JokeFilterFormComponent implements OnInit {
 
       const currentProp = formValuesCopy[key];
 
-
-      if(key.toLowerCase() == "type") {
-        const typePropertyKeys = Object.keys(valueToSet.type);
-        currentProp.forEach((v: any) => {
-          v.value = typePropertyKeys.includes(v.name);
-        });
-        return;
-      }
-
       if(Array.isArray(currentProp)) {
+
+        if(key.toLowerCase() == "type") {
+          const typePropertyKeys = Object.keys(valueToSet.type);
+          currentProp.forEach((v: any) => {
+            v.value = typePropertyKeys.includes(v.name);
+          });
+          return;
+        }
+
         const indexes = currentProp.reduce((res: number[], item: any, index: number) => {
             valueToSet?.[key]?.[item?.name] && res.push(index);
             return res;
@@ -312,7 +308,6 @@ export class JokeFilterFormComponent implements OnInit {
     })
 
     this.form.setValue(formValuesCopy)
-    console.log(formValuesCopy)
     setTimeout(() => this.handleFormSubmit(this.form.value, false))
   }
 

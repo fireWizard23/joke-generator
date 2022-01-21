@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AnyTypeJoke, getJokeString, Joke, JokeError, jokeToError } from 'src/app/misc/joke.model';
 import { JokeFiltersService } from 'src/app/services/joke-filters.service';
-import { JokeHttpService } from 'src/app/services/joke-http-service/joke-http.service';
+import { JokeHttpService, parseFiltersToUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
 import { MetaService } from 'src/app/services/meta-services/meta.service';
 
 @Component({
@@ -40,6 +40,10 @@ export class JokePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._jokeFilters.filterChanges.subscribe((filters: any) => {
       this.filters = filters;
+      this._router.navigate(["joke"], {
+        queryParams: parseFiltersToUrlParams(filters, false),
+        queryParamsHandling: "merge"
+      })
     })
 
     this._jokeSubscription = this.httpService.onJokeChange$
@@ -49,6 +53,7 @@ export class JokePageComponent implements OnInit, OnDestroy {
         }
         if(joke.error === true) {
           this.jokeError = jokeToError(joke )
+          return;
         }
         this.isLoading = false;
         this.joke = joke;

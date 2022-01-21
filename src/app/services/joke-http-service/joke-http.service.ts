@@ -57,7 +57,7 @@ export class JokeHttpService  {
       this.getRandomJoke(); 
       return;
     }
-    filters = parseFilters(filters);
+    filters = parseFiltersToUrlParams(filters);
 
     this.getAdvanced(filters.categories, filters)
       .subscribe((v) => {
@@ -110,7 +110,7 @@ export class JokeHttpService  {
   }
 
   public getAdvanced<T extends AnyTypeJoke>(category: JokeCategory[], opts: JokeUrlParams): Observable<T> {
-    const _opts = parseFilters(opts) as any;
+    const _opts = parseFiltersToUrlParams(opts) as any;
     let params = new HttpParams();
     delete _opts.categories;
     for(const key in _opts) {
@@ -155,7 +155,7 @@ export class JokeHttpService  {
 
 }
 
-export function parseFilters(_filters: JokeUrlParams & {[key: string] : any}) : object{
+export function parseFiltersToUrlParams(_filters: JokeUrlParams & {[key: string] : any}, deleteFalsyValues=true) : object{
   const filters = cloneDeep(_filters);
 
   if(typeof filters.idRange != "string" && filters.idRange != undefined) {
@@ -168,8 +168,13 @@ export function parseFilters(_filters: JokeUrlParams & {[key: string] : any}) : 
 
   for(const key in filters) {
     let currentValue = filters[key];
-    if(currentValue == null || currentValue == "" || Object.keys(currentValue).length == 0) {
-      delete filters[key]
+    if(currentValue == null ) {
+      deleteFalsyValues && delete filters[key]
+      continue;
+    }
+    if( currentValue == "" || Object.keys(currentValue).length == 0) {
+      filters[key] = null;
+      deleteFalsyValues && delete filters[key]
       continue;
     }
     if(typeof currentValue === "object") {

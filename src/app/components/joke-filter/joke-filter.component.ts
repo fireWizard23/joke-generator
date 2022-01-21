@@ -26,9 +26,7 @@ export class JokeFilterComponent implements OnInit, AfterViewInit  {
 
   ngAfterViewInit(): void {
     this._ar.queryParams.subscribe((params) => {
-
       const obj =  parseUrlParamsToFilters(params);
-
       this.filterForm.patchFormValue(obj)
 
     });
