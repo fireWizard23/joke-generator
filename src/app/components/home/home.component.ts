@@ -1,7 +1,7 @@
 import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { JokeHttpService} from 'src/app/services/joke-http-service/joke-http.service';
-import {TwoPartTypeJoke,Joke, SingleTypeJoke, getJokeString} from '../../misc/joke.model';
+import {TwoPartTypeJoke,Joke, SingleTypeJoke, getJokeString, isJokeError} from '../../misc/joke.model';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta-services/meta.service';
 import { Router } from '@angular/router';
@@ -26,7 +26,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.jokeSubscription = this.httpService.onJokeChange$
       .subscribe((v) => {
-        if(v === null) {return}
+        if(v === null || isJokeError(v)) {return}
+
         this._router.navigate(["joke", v.id]) 
       })
       this.httpService.getRandomJoke()

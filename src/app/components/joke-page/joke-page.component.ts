@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AnyTypeJoke, getJokeString, Joke, JokeError, jokeToError } from 'src/app/misc/joke.model';
+import { AnyTypeJoke, getJokeString, isJokeError, Joke, JokeError } from 'src/app/misc/joke.model';
 import { JokeFiltersService } from 'src/app/services/joke-filters.service';
 import { JokeHttpService, parseFiltersToUrlParams } from 'src/app/services/joke-http-service/joke-http.service';
 import { MetaService } from 'src/app/services/meta-services/meta.service';
@@ -51,8 +51,8 @@ export class JokePageComponent implements OnInit, OnDestroy {
         if(joke == null) {
           return;
         }
-        if(joke.error === true) {
-          this.jokeError = jokeToError(joke )
+        if(isJokeError(joke)) {
+          this.jokeError = joke;
           return;
         }
         this.isLoading = false;
@@ -65,6 +65,7 @@ export class JokePageComponent implements OnInit, OnDestroy {
 
   }
 
+  
 
   handleClick() {
     this.isLoading = true;

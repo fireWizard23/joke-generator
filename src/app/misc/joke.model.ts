@@ -5,7 +5,7 @@ export type JokeFlags = {
     racist: boolean,
     sexist: boolean,
     explicit: boolean;
-  }
+}
 
 export type JokeError = {
   error: boolean;
@@ -36,6 +36,8 @@ export interface Joke {
   
 } 
 
+export type JokeRequest = (Joke | JokeError) & {readonly error: boolean;}
+
 export interface AnyTypeJoke  extends JokeRequestData, Joke{
   
 } 
@@ -58,10 +60,6 @@ export interface MultipleJokes extends JokeRequestData{
 }
 
 
-export function jokeToError(joke: Joke) : JokeError {
-  return (joke as any) as JokeError;
-}
-
 
 export function getJokeString(joke : Joke) : string | null {
     if(joke.type === 'twopart') {
@@ -81,7 +79,9 @@ export function getJokeString(joke : Joke) : string | null {
 
 
 export function isMultipleJokes(v: unknown) : v is MultipleJokes {
-  return (v as any).amount != null;
+  return (v as any)?.amount != null;
 }
 
-
+export function isJokeError(v: JokeRequest) : v is JokeError {
+  return (v as any)?.error != undefined;
+}

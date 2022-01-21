@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import {shareReplay, tap} from 'rxjs/operators'
 import { environment as env } from 'src/environments/environment';
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
-import {TwoPartTypeJoke,Joke, SingleTypeJoke, JokeCategory, JokeType, JokeFlags, JokeLang, AnyTypeJoke} from '../../misc/joke.model';
+import {TwoPartTypeJoke,Joke, SingleTypeJoke, JokeCategory, JokeType, JokeFlags, JokeLang, AnyTypeJoke, JokeError, JokeRequest} from '../../misc/joke.model';
 import { Map } from 'immutable';
 import { ActivatedRoute } from '@angular/router';
 import {cloneDeep} from 'lodash'
@@ -29,15 +29,13 @@ type JokeUrlOptions = {
 export class JokeHttpService  {
 
 
-  currentJoke?: Joke;
+  currentJoke?: JokeRequest;
 
   _cachedJokes = Map();
 
-  private _onJokeChange$ = new Subject<AnyTypeJoke>();
+  private _onJokeChange$ = new Subject<JokeRequest>();
 
-  public get onJokeChange$() : Observable<AnyTypeJoke> {
-    return this._onJokeChange$.asObservable();
-  }
+  public readonly onJokeChange$ = this._onJokeChange$.asObservable();
 
   constructor(protected http : HttpClient, _activatedRoute: ActivatedRoute ) {
     _activatedRoute.params.subscribe((param) => {
@@ -45,7 +43,7 @@ export class JokeHttpService  {
       if(id != null) {
         return;
       }
-      this.getById(Math.round(Math.random()))
+      this.getById(id)
         .subscribe((joke) => {
           this.currentJoke = joke;
         })
